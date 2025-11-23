@@ -1,0 +1,350 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("CHECKBUS_DATABASE_URL")
+}
+
+model Rol {
+  id_rol      Int          @id @default(autoincrement())
+  nombre_rol  String       @unique @db.VarChar(50)
+  descripcion       String?   @db.VarChar(255)
+  usuario_rol UsuarioRol[]
+}
+
+model EstadoUsuario {
+  id_estado_usuario Int       @id @default(autoincrement())
+  nombre_estado     String    @db.VarChar(20)
+  descripcion       String?   @db.VarChar(255)
+  usuarios          Usuario[]
+}
+
+model TokenRestablecimiento {
+  id_token         Int       @id @default(autoincrement())
+  codigo_token     String    @unique @db.VarChar(200)
+  id_usuario       Int
+  fecha_creacion   DateTime  @default(now())
+  fecha_expiracion DateTime
+  fecha_uso        DateTime?
+  usuario          Usuario   @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
+
+  @@index([id_usuario])
+  @@index([fecha_expiracion])
+}
+
+model Usuario {
+  id_usuario        Int                     @id @default(autoincrement())
+  rut               String                  @unique @db.VarChar(20)
+  nombre            String                  @db.VarChar(100)
+  apellido          String                  @db.VarChar(100)
+  email             String                  @unique @db.VarChar(150)
+  telefono          String?                 @unique @db.VarChar(25) 
+  fecha_registro    DateTime                @default(now())
+  licencia_con      String?                 @db.VarChar(100)
+  username          String                  @unique @db.VarChar(50)
+  password_hash     String                  @db.VarChar(255)
+  id_estado_usuario Int
+  alertas           Alerta[]
+  documentos        Documento[]
+  incidentes        Incidente[]
+  tokens            TokenRestablecimiento[]
+  turnos            TurnoConductor[]
+  estado_usuario    EstadoUsuario           @relation(fields: [id_estado_usuario], references: [id_estado_usuario])
+  roles             UsuarioRol[]
+}
+
+model UsuarioRol {
+  id_usuario   Int
+  id_rol       Int
+  estado       String?   @db.VarChar(10)
+  fecha_inicio DateTime? @db.Date
+  fecha_fin    DateTime? @db.Date
+  rol          Rol       @relation(fields: [id_rol], references: [id_rol])
+  usuario      Usuario   @relation(fields: [id_usuario], references: [id_usuario])
+
+  @@id([id_usuario, id_rol])
+}
+
+model EstadoBus {
+  id_estado_bus Int     @id @default(autoincrement())
+  nombre_estado String  @db.VarChar(20)
+  descripcion   String? @db.VarChar(255)
+  buses         Bus[]
+}
+
+model Bus {
+  id_bus                 Int              @id @default(autoincrement())
+  patente                String           @unique @db.VarChar(6)
+  modelo                 String?          @db.VarChar(50)
+  marca                  String?          @db.VarChar(100)
+  anio                   Int?
+  capacidad              Int?
+  kilometraje            Int?
+  combustible            String?          @db.VarChar(20)
+  fecha_revision_tecnica DateTime?        @db.Date
+  fecha_extintor         DateTime?        @db.Date
+  id_estado_bus          Int
+  alertas                Alerta[]
+  estado_bus             EstadoBus        @relation(fields: [id_estado_bus], references: [id_estado_bus])
+  documentos             Documento[]
+  incidentes             Incidente[]
+  mantenimientos         Mantenimiento[]
+  turnos                 TurnoConductor[]
+}
+
+model EstadoTurno {
+  id_estado_turno Int              @id @default(autoincrement())
+  nombre_estado   String           @db.VarChar(20)
+  descripcion     String?          @db.VarChar(255)
+  turnos          TurnoConductor[]
+}
+
+model TurnoConductor {
+  id_turno        Int         @id @default(autoincrement())
+  id_usuario      Int
+  id_bus          Int
+  hora_inicio     DateTime
+  hora_fin        DateTime?
+  fecha           DateTime    @db.Date
+  id_estado_turno Int
+  titulo          String?     @db.VarChar(150)
+  descripcion     String?
+  ruta_origen     String?     @db.VarChar(100)
+  ruta_fin        String?     @db.VarChar(100)
+  bus             Bus         @relation(fields: [id_bus], references: [id_bus])
+  estado          EstadoTurno @relation(fields: [id_estado_turno], references: [id_estado_turno])
+  usuario         Usuario     @relation(fields: [id_usuario], references: [id_usuario])
+}
+
+model TipoTaller {
+  id_tipo_taller Int      @id @default(autoincrement())
+  nombre_tipo    String   @db.VarChar(100)
+  descripcion    String?  @db.VarChar(255)
+  especialidad   String?  @db.VarChar(100)
+  talleres       Taller[]
+}
+
+model Taller {
+  id_taller      Int             @id @default(autoincrement())
+  nombre         String          @db.VarChar(100)
+  contacto       String?         @db.VarChar(100)
+  direccion      String?         @db.VarChar(200)
+  email          String?         @db.VarChar(100)
+  id_tipo_taller Int
+  mantenimientos Mantenimiento[]
+  mecanicos      Mecanico[]
+  tipo_taller    TipoTaller      @relation(fields: [id_tipo_taller], references: [id_tipo_taller])
+}
+
+model Mecanico {
+  id_mecanico Int                     @id @default(autoincrement())
+  id_taller   Int
+  nombre      String                  @db.VarChar(100)
+  apellido    String                  @db.VarChar(100)
+  taller      Taller                  @relation(fields: [id_taller], references: [id_taller])
+  relaciones  MecanicoMantenimiento[]
+}
+
+model EstadoMantenimiento {
+  id_estado_mantenimiento Int             @id @default(autoincrement())
+  nombre_estado           String          @db.VarChar(20)
+  descripcion             String?         @db.VarChar(255)
+  mantenimientos          Mantenimiento[]
+}
+
+model TipoMantenimiento {
+  id_tipo_mantenimiento Int             @id @default(autoincrement())
+  nombre_tipo           String          @db.VarChar(100)
+  descripcion           String?         @db.VarChar(255)
+  categoria             String?         @db.VarChar(100)
+  mantenimientos        Mantenimiento[]
+}
+
+model Mantenimiento {
+  id_mantenimiento        Int                     @id @default(autoincrement())
+  id_bus                  Int
+  id_taller               Int
+  id_tipo_mantenimiento   Int
+  id_estado_mantenimiento Int
+  fecha                   DateTime                @db.Date
+  observaciones           String?
+  costo_repuestos         Decimal                 @default(0) @db.Decimal(12, 2)
+  costo_mano_obra         Decimal                 @default(0) @db.Decimal(12, 2)
+  costo_total             Decimal                 @default(0) @db.Decimal(12, 2)
+  alertas                 Alerta[]
+  documentos              Documento[]
+  bus                     Bus                     @relation(fields: [id_bus], references: [id_bus])
+  estado                  EstadoMantenimiento     @relation(fields: [id_estado_mantenimiento], references: [id_estado_mantenimiento])
+  taller                  Taller                  @relation(fields: [id_taller], references: [id_taller])
+  tipo                    TipoMantenimiento       @relation(fields: [id_tipo_mantenimiento], references: [id_tipo_mantenimiento])
+  mecanicos               MecanicoMantenimiento[]
+  repuestos               RepuestoMantenimiento[]
+}
+
+model MecanicoMantenimiento {
+  id_mecanico      Int
+  id_mantenimiento Int
+  actividad        String?       @db.VarChar(255)
+  mantenimiento    Mantenimiento @relation(fields: [id_mantenimiento], references: [id_mantenimiento])
+  mecanico         Mecanico      @relation(fields: [id_mecanico], references: [id_mecanico])
+
+  @@id([id_mecanico, id_mantenimiento])
+}
+
+model EstadoRepuesto {
+  id_estado_repuesto Int        @id @default(autoincrement())
+  nombre_estado      String     @db.VarChar(20)
+  descripcion        String?    @db.VarChar(255)
+  repuestos          Repuesto[]
+}
+
+model TipoRepuesto {
+  id_tipo_repuesto Int        @id @default(autoincrement())
+  nombre_tipo      String     @db.VarChar(100)
+  descripcion      String?    @db.VarChar(255)
+  categoria        String?    @db.VarChar(100)
+  repuestos        Repuesto[]
+}
+
+model ProveedorRepuesto {
+  id_proveedor Int        @id @default(autoincrement())
+  nombre       String     @db.VarChar(100)
+  direccion    String?    @db.VarChar(200)
+  telefono     String?    @db.VarChar(20)
+  email        String?    @db.VarChar(100)
+  repuestos    Repuesto[]
+}
+
+model Repuesto {
+  id_repuesto        Int                     @id @default(autoincrement())
+  nombre             String                  @db.VarChar(100)
+  descripcion        String?                 @db.VarChar(255)
+  costo              Decimal                 @db.Decimal(12, 2)
+  id_estado_repuesto Int
+  id_tipo_repuesto   Int
+  id_proveedor       Int
+  estado             EstadoRepuesto          @relation(fields: [id_estado_repuesto], references: [id_estado_repuesto])
+  proveedor          ProveedorRepuesto       @relation(fields: [id_proveedor], references: [id_proveedor])
+  tipo               TipoRepuesto            @relation(fields: [id_tipo_repuesto], references: [id_tipo_repuesto])
+  mantenimientos     RepuestoMantenimiento[]
+}
+
+model RepuestoMantenimiento {
+  id_repuesto      Int
+  id_mantenimiento Int
+  cantidad         Int           @default(1)
+  mantenimiento    Mantenimiento @relation(fields: [id_mantenimiento], references: [id_mantenimiento])
+  repuesto         Repuesto      @relation(fields: [id_repuesto], references: [id_repuesto])
+
+  @@id([id_repuesto, id_mantenimiento])
+}
+
+model EstadoIncidente {
+  id_estado_incidente Int         @id @default(autoincrement())
+  nombre_estado       String      @db.VarChar(20)
+  descripcion         String?     @db.VarChar(255)
+  incidentes          Incidente[]
+}
+
+model TipoIncidente {
+  id_tipo_incidente Int         @id @default(autoincrement())
+  nombre_tipo       String      @db.VarChar(100)
+  descripcion       String?     @db.VarChar(255)
+  categoria         String?     @db.VarChar(100)
+  incidentes        Incidente[]
+}
+
+model Incidente {
+  id_incidente        Int             @id @default(autoincrement())
+  id_bus              Int
+  id_usuario          Int
+  descripcion         String?
+  fecha               DateTime        @db.Date
+  urgencia            String?         @db.VarChar(20)
+  ubicacion           String?         @db.VarChar(200)
+  id_estado_incidente Int
+  id_tipo_incidente   Int
+  alertas             Alerta[]
+  documentos          Documento[]
+  bus                 Bus             @relation(fields: [id_bus], references: [id_bus])
+  estado              EstadoIncidente @relation(fields: [id_estado_incidente], references: [id_estado_incidente])
+  tipo                TipoIncidente   @relation(fields: [id_tipo_incidente], references: [id_tipo_incidente])
+  usuario             Usuario         @relation(fields: [id_usuario], references: [id_usuario])
+}
+
+model EstadoDocumento {
+  id_estado_documento Int         @id @default(autoincrement())
+  nombre_estado       String      @db.VarChar(20)
+  descripcion         String?     @db.VarChar(255)
+  documentos          Documento[]
+}
+
+model TipoDocumento {
+  id_tipo_documento Int         @id @default(autoincrement())
+  nombre_tipo       String      @db.VarChar(100)
+  descripcion       String?     @db.VarChar(255)
+  categoria         String?     @db.VarChar(100)
+  documentos        Documento[]
+}
+
+model Documento {
+  id_documento        Int             @id @default(autoincrement())
+  nombre_archivo      String          @db.VarChar(100)
+  ruta                String          @db.VarChar(255)
+  fecha_creacion      DateTime        @default(now()) @db.Date
+  fecha_caducidad     DateTime?
+  tamano              Decimal?        @db.Decimal(10, 2)
+  id_tipo_documento   Int
+  id_estado_documento Int
+  id_usuario          Int?
+  id_bus              Int?
+  id_incidente        Int?
+  id_mantenimiento    Int?
+  alertas             Alerta[]
+  bus                 Bus?            @relation(fields: [id_bus], references: [id_bus])
+  estado              EstadoDocumento @relation(fields: [id_estado_documento], references: [id_estado_documento])
+  incidente           Incidente?      @relation(fields: [id_incidente], references: [id_incidente])
+  mantenimiento       Mantenimiento?  @relation(fields: [id_mantenimiento], references: [id_mantenimiento])
+  tipo                TipoDocumento   @relation(fields: [id_tipo_documento], references: [id_tipo_documento])
+  usuario             Usuario?        @relation(fields: [id_usuario], references: [id_usuario])
+}
+
+model EstadoAlerta {
+  id_estado_alerta Int      @id @default(autoincrement())
+  nombre_estado    String   @unique @db.VarChar(20)
+  descripcion      String?  @db.VarChar(255)
+  alertas          Alerta[]
+}
+
+model TipoAlerta {
+  id_tipo_alerta Int      @id @default(autoincrement())
+  nombre_tipo    String   @unique @db.VarChar(100)
+  descripcion    String?  @db.VarChar(255)
+  categoria      String?  @db.VarChar(100)
+  alertas        Alerta[]
+}
+
+model Alerta {
+  id_alerta        Int            @id @default(autoincrement())
+  titulo           String         @db.VarChar(100)
+  descripcion      String?
+  fecha_creacion   DateTime       @default(now())
+  prioridad        String?        @db.VarChar(20)
+  id_estado_alerta Int
+  id_tipo_alerta   Int
+  id_usuario       Int?
+  id_documento     Int?
+  id_bus           Int?
+  id_mantenimiento Int?
+  id_incidente     Int?
+  dedup_key        String?        @unique
+  bus              Bus?           @relation(fields: [id_bus], references: [id_bus])
+  documento        Documento?     @relation(fields: [id_documento], references: [id_documento])
+  estado           EstadoAlerta   @relation(fields: [id_estado_alerta], references: [id_estado_alerta])
+  incidente        Incidente?     @relation(fields: [id_incidente], references: [id_incidente])
+  mantenimiento    Mantenimiento? @relation(fields: [id_mantenimiento], references: [id_mantenimiento])
+  tipo             TipoAlerta     @relation(fields: [id_tipo_alerta], references: [id_tipo_alerta])
+  usuario          Usuario?       @relation(fields: [id_usuario], references: [id_usuario])
+}
