@@ -11,7 +11,6 @@ export default defineEventHandler(async (event) => {
     const result = safeParse(busSchema, body)
 
     if (!result.success) {
-      // Valibot ya tiene mensajes amigables, simplemente devolvemos el primero
       throw createError({ statusCode: 400, message: result.issues[0].message })
     }
 
@@ -31,11 +30,11 @@ export default defineEventHandler(async (event) => {
         marca: data.marca ?? null,
         modelo: data.modelo ?? null,
         combustible: data.combustible ?? null,
-        anio: data.anio ?? null, // ✅ Recibe 'anio'
-        kilometraje: data.kilometraje ?? 0, // ✅ Recibe 'kilometraje'
+        anio: data.anio ?? null, 
+        kilometraje: data.kilometraje ?? 0, 
         capacidad: data.capacidad ?? null,
-        fecha_revision_tecnica: toDateOrNull(data.fechaRevisionTecnica), // ✅ Maneja null si no hay fecha
-        fecha_extintor: toDateOrNull(data.fechaExtintor), // ✅ Maneja null si no hay fecha
+        fecha_revision_tecnica: toDateOrNull(data.fechaRevisionTecnica), 
+        fecha_extintor: toDateOrNull(data.fechaExtintor),
         id_estado_bus: estado.id_estado_bus,
       },
     })
@@ -43,7 +42,6 @@ export default defineEventHandler(async (event) => {
     return { item: bus }
   } catch (err: any) {
     if (err?.code === 'P2002') {
-      // Mensaje de error mejorado para patente duplicada
       throw createError({
         statusCode: 409,
         message: '🛑 Error: Ya existe un bus registrado con esa patente.',

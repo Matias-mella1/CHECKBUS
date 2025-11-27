@@ -494,13 +494,7 @@ function verMapa(row: Incidente): void {
         </div>
 
         <div class="actions">
-          <button
-            v-if="canCreate"
-            class="btn"
-            @click="openCreate"
-          >
-            + Nuevo Incidente
-          </button>
+        
         </div>
       </div>
 

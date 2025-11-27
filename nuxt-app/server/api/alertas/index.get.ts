@@ -1,6 +1,6 @@
 // server/api/alertas/index.get.ts
 import { prisma } from '../../utils/prisma'
-import { getQuery, createError } from 'h3'
+import { getQuery, createError, defineEventHandler } from 'h3'
 import { safeParse } from 'valibot'
 import { ListaAlertaQueryDto } from '../../schemas/alerta'
 

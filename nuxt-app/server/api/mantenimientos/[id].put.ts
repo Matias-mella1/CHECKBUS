@@ -45,8 +45,6 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // 👇 Tomar mano de obra desde "costo_mano_obra" o "costo" (lo que venga),
-    // y si no viene nada, mantener el valor que ya está en BD
     const manoObraInput =
       data.costo_mano_obra !== undefined && data.costo_mano_obra !== null
         ? data.costo_mano_obra
@@ -99,7 +97,7 @@ export default defineEventHandler(async (event) => {
 
     return { item: actualizado }
   } catch (err: any) {
-    console.error('❌ Error en PUT /api/mantenimientos/:id', err)
+    console.error(' Error en PUT /api/mantenimientos/:id', err)
     if (err?.statusCode) throw err
     throw createError({
       statusCode: 500,

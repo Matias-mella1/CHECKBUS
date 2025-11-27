@@ -13,7 +13,6 @@ export default defineEventHandler(async (event) => {
 
     const body = await readBody(event)
 
-    // ✅ Validación con Valibot (NO busSchema)
     const result = safeParse(UsuarioUpdateSchema, body)
     if (!result.success) {
       throw createError({
@@ -24,9 +23,6 @@ export default defineEventHandler(async (event) => {
 
     const data = result.output
 
-    // =======================
-    //  UPDATE DATA PARA PRISMA
-    // =======================
     const updateData: any = {
       rut: data.rut,
       nombre: data.nombre,
@@ -37,7 +33,7 @@ export default defineEventHandler(async (event) => {
       licencia_con: data.licencia ?? null,
     }
 
-    // Si envías "estado"
+
     if (data.estado) {
       const estado = await prisma.estadoUsuario.findFirst({
         where: { nombre_estado: data.estado },
@@ -50,17 +46,12 @@ export default defineEventHandler(async (event) => {
       updateData.id_estado_usuario = estado.id_estado_usuario
     }
 
-    // =======================
-    //  ACTUALIZAR USUARIO
-    // =======================
     const usuario = await prisma.usuario.update({
       where: { id_usuario: id },
       data: updateData,
     })
 
-    // =======================
-    //  ACTUALIZAR ROLES
-    // =======================
+
     if (data.roles) {
       await prisma.usuarioRol.deleteMany({
         where: { id_usuario: usuario.id_usuario },

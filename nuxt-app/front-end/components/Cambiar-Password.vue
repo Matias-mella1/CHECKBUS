@@ -57,7 +57,7 @@ async function onSubmit () {
 
 <template>
   <div class="card-change">
-    <!-- Botón X para cerrar -->
+    
     <button class="close-btn" type="button" @click="props.close?.()">
       ✕
     </button>
@@ -137,7 +137,7 @@ async function onSubmit () {
   animation: fadeIn .3s ease;
 }
 
-/* Botón X */
+
 .close-btn {
   position: absolute;
   top: 10px;
@@ -161,7 +161,7 @@ async function onSubmit () {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* HEADER */
+
 .header {
   display: flex;
   align-items: center;
@@ -195,7 +195,7 @@ async function onSubmit () {
   color: #64748b;
 }
 
-/* FORM */
+
 .form {
   margin-top: 0.5rem;
 }
@@ -234,7 +234,6 @@ label {
   box-shadow: 0 0 0 3px rgba(0, 119, 200, 0.18);
 }
 
-/* Hints */
 .hints {
   list-style: none;
   padding: 0;
@@ -244,7 +243,7 @@ label {
   line-height: 1.4;
 }
 
-/* Mensajes */
+
 .msg {
   font-size: 0.9rem;
   margin-bottom: 0.8rem;
@@ -259,7 +258,7 @@ label {
   font-weight: 600;
 }
 
-/* Botón */
+
 .actions {
   display: flex;
   justify-content: flex-end;
@@ -289,7 +288,7 @@ label {
   cursor: not-allowed;
 }
 
-/* Responsive */
+
 @media (max-width: 640px) {
   .card-change {
     padding: 1.4rem 1.2rem;

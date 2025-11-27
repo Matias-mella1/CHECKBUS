@@ -4,10 +4,6 @@ import { prisma } from '../utils/prisma'
 import { sendAlertEmail } from '../utils/email'
 import { estadoSegunFechaCaducidad } from '../utils/DocumentoRuler'
 
-// -------------------------------------------------------
-// UTILIDADES BASE
-// -------------------------------------------------------
-
 function ymd(d?: Date | string | null): string | null {
   if (!d) return null
   const dt = new Date(d)
@@ -62,13 +58,6 @@ async function getTipoAlertaId(nombre: string, categoria?: string) {
   return created.id_tipo_alerta
 }
 
-/**
- * Devuelve id_estado_documento para:
- *  - VIGENTE
- *  - POR VENCER
- *  - VENCIDO
- * (crea el estado si no existe)
- */
 async function getEstadoDocumentoId(
   nombre: 'VIGENTE' | 'POR VENCER' | 'VENCIDO'
 ): Promise<number> {
@@ -90,13 +79,6 @@ async function getEstadoDocumentoId(
   return created.id_estado_documento
 }
 
-/**
- * Obtiene correos de usuarios según lista de nombres de rol (separados por coma).
- *
- * Adaptado a tu esquema:
- *  - Usuario.roles -> UsuarioRol[]
- *  - UsuarioRol.id_rol / UsuarioRol.rol
- */
 async function getRoleEmails(rolesRaw?: string | null): Promise<string[]> {
   const raw = (rolesRaw ?? '').trim()
   if (!raw) return []
@@ -108,7 +90,7 @@ async function getRoleEmails(rolesRaw?: string | null): Promise<string[]> {
 
   if (!roleNames.length) return []
 
-  // 1) Buscar IDs de roles por nombre
+  // Buscar IDs de roles por nombre
   const roles = await prisma.rol.findMany({
     where: {
       nombre_rol: {
@@ -122,20 +104,14 @@ async function getRoleEmails(rolesRaw?: string | null): Promise<string[]> {
   const roleIds = roles.map(r => r.id_rol)
   if (!roleIds.length) return []
 
-  // 2) Buscar usuarios que tengan ALGUNO de esos roles (tabla intermedia UsuarioRol)
   const users = await prisma.usuario.findMany({
     where: {
       roles: {
         some: {
           id_rol: { in: roleIds },
-          // Si quieres filtrar solo roles activos, descomenta:
-          // estado: { equals: 'ACTIVO', mode: 'insensitive' },
+        
         },
       },
-      // Si quieres solo usuarios activos, descomenta:
-      // estado_usuario: {
-      //   nombre_estado: { equals: 'ACTIVO', mode: 'insensitive' },
-      // },
     },
     select: { email: true },
   })
@@ -148,10 +124,6 @@ async function getRoleEmails(rolesRaw?: string | null): Promise<string[]> {
 
   return Array.from(unique)
 }
-
-// -------------------------------------------------------
-// LAYOUT HTML DEL CORREO
-// -------------------------------------------------------
 
 const LOGO_URL =
   (process.env.ALERTS_LOGO_URL ?? '').trim() ||
@@ -208,9 +180,7 @@ function wrapEmailHtml(opts: { title: string; body: string; subtitle?: string })
   `
 }
 
-// -------------------------------------------------------
-// GENERACIÓN DIARIA
-// -------------------------------------------------------
+// Generar alerta diaria
 
 export async function generarAlertas({ diasVentana = 30 }: { diasVentana?: number } = {}) {
   const ESTADO_ACTIVA = await getEstadoAlertaId('ACTIVA')
@@ -239,13 +209,13 @@ export async function generarAlertas({ diasVentana = 30 }: { diasVentana?: numbe
 
   const docRoleEmails  = await getRoleEmails(docRoles)
   const extRoleEmails  = await getRoleEmails(extRoles)
-  const revRoleEmails  = await getRoleEmails(extRoles) // mismo grupo que extintor
+  const revRoleEmails  = await getRoleEmails(extRoles) 
   const incRoleEmails  = await getRoleEmails(incRoles)
-  const mantRoleEmails = await getRoleEmails(mantRoles) // se usan en secciones de mantención
+  const mantRoleEmails = await getRoleEmails(mantRoles) 
 
-  // ------------------------------
-  // 1) DOCUMENTOS POR CADUCAR (>= hoy, <= límite)
-  // ------------------------------
+
+  // Documento por vencer 
+
   const docsPorCaducar = await prisma.documento.findMany({
     where: {
       fecha_caducidad: {
@@ -264,7 +234,7 @@ export async function generarAlertas({ diasVentana = 30 }: { diasVentana?: numbe
     const vence = ymd(d.fecha_caducidad) ?? ymd(hoy)!
     const dedup_key = `doc_caduca|doc:${d.id_documento}|${vence}`
 
-    // Estado calculado según fecha
+ 
     const estadoCalc = estadoSegunFechaCaducidad(d.fecha_caducidad ?? undefined)
     let nuevoEstadoId: number | null = d.id_estado_documento ?? null
 
@@ -336,9 +306,9 @@ export async function generarAlertas({ diasVentana = 30 }: { diasVentana?: numbe
     }
   }
 
-  // ------------------------------
-  // 1.b) DOCUMENTOS YA VENCIDOS (fecha_caducidad < hoy y no VENCIDO aún)
-  // ------------------------------
+
+  // Docuemntos ya vencidos
+
   const docsVencidos = await prisma.documento.findMany({
     where: {
       fecha_caducidad: { lt: hoy },
@@ -416,9 +386,8 @@ export async function generarAlertas({ diasVentana = 30 }: { diasVentana?: numbe
     }
   }
 
-  // ------------------------------
-  // 2) EXTINTOR POR VENCER
-  // ------------------------------
+  // Extintor Por vencer
+
   const busesExtintor = await prisma.bus.findMany({
     where: { fecha_extintor: { gte: hoy, lte: limite } },
     select: { id_bus: true, patente: true, fecha_extintor: true },
@@ -472,9 +441,9 @@ export async function generarAlertas({ diasVentana = 30 }: { diasVentana?: numbe
     }
   }
 
-  // ------------------------------
-  // 3) REVISIÓN TÉCNICA
-  // ------------------------------
+
+  // Revision Tecnica
+
   const busesRev = await prisma.bus.findMany({
     where: { fecha_revision_tecnica: { gte: hoy, lte: limite } },
     select: { id_bus: true, patente: true, fecha_revision_tecnica: true },
@@ -528,9 +497,9 @@ export async function generarAlertas({ diasVentana = 30 }: { diasVentana?: numbe
     }
   }
 
-  // ------------------------------
-  // 4) INCIDENTES ABIERTOS > 7 DÍAS
-  // ------------------------------
+
+  // Incidentes aviertos  > 7 DÍAS
+
   const hace7 = addDays(hoy, -7)
 
   const incs = await prisma.incidente.findMany({
@@ -606,9 +575,7 @@ export async function generarAlertas({ diasVentana = 30 }: { diasVentana?: numbe
   }
 }
 
-// -------------------------------------------------------
-// ALERTA INMEDIATA — INCIDENTE NUEVO
-// -------------------------------------------------------
+// Alerta inmediata-incidente nuevo 
 
 export async function generarAlertaIncidenteInmediata(id_incidente: number) {
   const ESTADO_ACTIVA = await getEstadoAlertaId('ACTIVA')
@@ -693,9 +660,8 @@ export async function generarAlertaIncidenteInmediata(id_incidente: number) {
   }
 }
 
-// -------------------------------------------------------
-// ALERTA INMEDIATA — MANTENIMIENTO NUEVO
-// -------------------------------------------------------
+
+//Alerta inmediata -mantenimiento nuevo
 
 export async function generarAlertaMantenimientoInmediata(id_mantenimiento: number) {
   const ESTADO_ACTIVA = await getEstadoAlertaId('ACTIVA')
@@ -779,9 +745,9 @@ export async function generarAlertaMantenimientoInmediata(id_mantenimiento: numb
   }
 }
 
-// -------------------------------------------------------
-// ALERTA INMEDIATA — MANTENIMIENTO FINALIZADO
-// -------------------------------------------------------
+
+// Alerta generada-mantenimiento finalizado
+
 
 export async function generarAlertaMantenimientoFinalizado(id_mantenimiento: number) {
   const ESTADO_ACTIVA = await getEstadoAlertaId('ACTIVA')
@@ -864,9 +830,9 @@ export async function generarAlertaMantenimientoFinalizado(id_mantenimiento: num
   }
 }
 
-// -------------------------------------------------------
-// ALERTA INMEDIATA — TURNO NUEVO
-// -------------------------------------------------------
+
+// Alerta inmediata -turno nuevo
+
 
 export async function generarAlertaTurnoInmediata(id_turno: number) {
   const ESTADO_ACTIVA  = await getEstadoAlertaId('ACTIVA')
@@ -949,9 +915,10 @@ export async function generarAlertaTurnoInmediata(id_turno: number) {
   }
 }
 
-// -------------------------------------------------------
-// ALERTA INMEDIATA — TURNO CANCELADO
-// -------------------------------------------------------
+
+// Alerta inmediata -turno cancelado
+
+
 
 export async function generarAlertaTurnoCancelado(id_turno: number) {
   const ESTADO_ACTIVA = await getEstadoAlertaId('ACTIVA')

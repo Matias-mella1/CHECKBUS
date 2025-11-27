@@ -7,9 +7,6 @@ definePageMeta({ layout: 'panel' })
 
 const toast = useToast()
 
-/* =========================
- *  Tipos
- * ========================= */
 type PickOpt = { id:number; nombre:string; categoria?:string | null }
 
 type AlertaRow = {
@@ -49,9 +46,6 @@ type AlertaRow = {
   } | null
 }
 
-/* =========================
- *  Estado principal
- * ========================= */
 const loading = ref(false)
 const errorMsg = ref('')
 const mensaje = ref('')
@@ -75,17 +69,11 @@ const search = reactive({
   id_tipo_alerta: '' as number | '',
 })
 
-/* =========================
- *  Paginación
- * ========================= */
 const totalPages = computed(() =>
   Math.max(1, Math.ceil(total.value / pageSize.value))
 )
 const showPager = computed(() => total.value > pageSize.value)
 
-/* =========================
- *  Helpers visuales
- * ========================= */
 function estadoClass(nombre?: string | null) {
   const s = (nombre || '').toUpperCase()
   if (s === 'ACTIVA')   return 'badge badge-blue'
@@ -102,9 +90,6 @@ function prioridadClass(p?: string | null) {
   return 'badge badge-gray'
 }
 
-/* =========================
- *  Catálogos
- * ========================= */
 async function loadCatalogos() {
   try {
     const res = await $fetch<{
@@ -130,9 +115,6 @@ async function loadCatalogos() {
   }
 }
 
-/* =========================
- *  Cargar lista
- * ========================= */
 async function load() {
   loading.value = true
   errorMsg.value = ''
@@ -163,7 +145,7 @@ async function load() {
   }
 }
 
-/* Debounce para búsqueda / filtros */
+
 let filterTimer:any = null
 watch(
   () => ({ ...search, pageSize: pageSize.value }),
@@ -177,9 +159,7 @@ watch(
   { deep: true }
 )
 
-/* =========================
- *  Acciones
- * ========================= */
+
 async function marcarAtendida(row: AlertaRow) {
   try {
     await $fetch(`/api/alertas/${row.id_alerta}`, {
@@ -238,9 +218,6 @@ async function generar() {
   }
 }
 
-/* =========================
- *  Paginación
- * ========================= */
 function prevPage() {
   if (page.value <= 1) return
   page.value--
@@ -252,9 +229,7 @@ function nextPage() {
   load()
 }
 
-/* =========================
- *  Mounted
- * ========================= */
+
 onMounted(async () => {
   await loadCatalogos()
   await load()
@@ -455,7 +430,7 @@ onMounted(async () => {
   gap:1rem;
 }
 
-/* Card base */
+
 .card{
   background:#fff;
   border-radius:12px;
@@ -468,7 +443,7 @@ onMounted(async () => {
   margin-bottom:.75rem;
 }
 
-/* Filtros */
+
 .filters{
   display:grid;
   grid-template-columns:repeat(5,1fr);
@@ -500,7 +475,7 @@ onMounted(async () => {
 .error{color:#dc2626;margin-top:.5rem}
 .ok{color:#059669;margin-top:.5rem}
 
-/* LISTA / CARDS */
+
 .list-empty{
   padding:2rem;
   text-align:center;
@@ -520,7 +495,6 @@ onMounted(async () => {
   box-shadow:0 8px 20px rgba(0,0,0,.05);
 }
 
-/* Header */
 .alert-header{
   display:flex;
   justify-content:space-between;
@@ -562,7 +536,7 @@ onMounted(async () => {
   color:#4b5563;
 }
 
-/* Body */
+
 .alert-body{
   margin-top:1rem;
   background:#ffffffd9;
@@ -591,7 +565,7 @@ onMounted(async () => {
   margin-top:.15rem;
 }
 
-/* Footer */
+
 .alert-footer{
   margin-top:.9rem;
   padding-top:.75rem;
@@ -616,7 +590,7 @@ onMounted(async () => {
   gap:.4rem;
 }
 
-/* Botones de fila */
+
 .row-action{
   background:#f3f4f6;
   border:1px solid #e5e7eb;
@@ -641,7 +615,7 @@ onMounted(async () => {
   background:#bbf7d0;
 }
 
-/* Badges estado / prioridad */
+
 .badge{
   display:inline-block;
   padding:.2rem .55rem;
@@ -659,7 +633,7 @@ onMounted(async () => {
   margin-top:.1rem;
 }
 
-/* Pager */
+
 .pager{
   margin-top:.75rem;
   display:flex;
@@ -681,7 +655,7 @@ onMounted(async () => {
 }
 .pager-info{color:#4b5563}
 
-/* Responsive */
+
 @media (max-width:900px){
   .filters{
     grid-template-columns:repeat(2,1fr);

@@ -58,7 +58,7 @@ function showValidationToast(errors: string[]) {
   const msg = [
     'Errores de Validación (Revisar campos):',
     ...errors.map(e => `- ${e}`),
-  ].join('\n')  // saltos de línea
+  ].join('\n') 
 
   toast.clear()
 
@@ -75,7 +75,6 @@ function onSubmit() {
   const nombre = form.nombre.trim()
   const descripcion = form.descripcion.trim()
 
-  // ⚠️ Costo como string original (para ver si viene vacío)
   const costoRaw = String(form.costo ?? '').trim()
   const costoNum = Number(costoRaw)
 

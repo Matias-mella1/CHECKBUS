@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
 
     const data = parsed.output
 
-    // verificar tipo
+    
     const tipo = await prisma.tipoTaller.findUnique({
       where: { id_tipo_taller: data.id_tipo_taller }
     })

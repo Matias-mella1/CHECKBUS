@@ -1,4 +1,6 @@
 import { prisma } from '../../utils/prisma'
+import { defineEventHandler } from 'h3'
+
 
 export default defineEventHandler(async () => {
   const estados = await prisma.estadoAlerta.findMany({

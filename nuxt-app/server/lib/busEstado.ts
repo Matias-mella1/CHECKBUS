@@ -3,7 +3,7 @@ import { prisma } from '../utils/prisma'
 import { getEstadoBusId } from './estados'
 
 export async function recomputeBusEstado(id_bus: number) {
-  // ---- Incidentes activos ----
+  // Incidentes activos 
   const [incReportado, incRevision] = await Promise.all([
     prisma.estadoIncidente.findFirst({
       where: { nombre_estado: { equals: 'REPORTADO', mode: 'insensitive' } },
@@ -25,7 +25,7 @@ export async function recomputeBusEstado(id_bus: number) {
     },
   })
 
-  // ---- Mantenciones activas ----
+  // Mantenciones activas 
   const [mantPend, mantProc] = await Promise.all([
     prisma.estadoMantenimiento.findFirst({
       where: { nombre_estado: { equals: 'PENDIENTE', mode: 'insensitive' } },
@@ -47,7 +47,7 @@ export async function recomputeBusEstado(id_bus: number) {
     },
   })
 
-  // ---- Decisión final ----
+  //  Decisión final 
   let nuevoEstadoNombre: string
   if (incidentesActivos > 0) {
     nuevoEstadoNombre = 'FUERA DE SERVICIO'

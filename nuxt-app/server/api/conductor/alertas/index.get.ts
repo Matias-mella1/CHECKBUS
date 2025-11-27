@@ -1,23 +1,21 @@
 import { prisma } from '../../../utils/prisma'
+import { defineEventHandler, getQuery, setHeader, createError } from 'h3'
 
 export default defineEventHandler(async (event) => {
   setHeader(event, 'Cache-Control', 'no-store')
 
   const q = getQuery(event)
 
-  // === OBTENER id_usuario ===
   let idUsuario =
     Number((event as any).context?.auth?.user?.id_usuario) ||
     Number((event as any).context?.auth?.user?.id) || 0
 
-  // fallback por query (útil si lo mandas desde el front)
   if (!idUsuario && q.id_usuario) idUsuario = Number(q.id_usuario)
 
   if (!idUsuario) {
     throw createError({ statusCode: 401, message: 'No autenticado: falta id_usuario' })
   }
 
-  // === FILTROS ===
   const where: any = { id_usuario: idUsuario }
 
   if (q.id_bus) where.id_bus = Number(q.id_bus)
@@ -49,12 +47,12 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // === PAGINACIÓN (page + pageSize, como usas en mis-alertas.vue) ===
+  //  Paginacion (page + pageSize, como usas en mis-alertas.vue) ===
   const pageSize = Math.min(Number(q.pageSize ?? 10), 100)
   const page = Math.max(Number(q.page ?? 1), 1)
   const skip = (page - 1) * pageSize
 
-  // === CONSULTA ===
+  //  Consulta
   const [rows, total] = await Promise.all([
     prisma.alerta.findMany({
       where,
@@ -103,14 +101,13 @@ export default defineEventHandler(async (event) => {
           },
         },
       },
-      orderBy: { fecha_creacion: 'desc' }, // cambia si tu campo se llama distinto
+      orderBy: { fecha_creacion: 'desc' }, 
       skip,
       take: pageSize,
     }),
     prisma.alerta.count({ where }),
   ])
 
-  // Prisma ya devuelve las relaciones con la misma forma que espera tu <MisAlertas/>
   return {
     items: rows,
     total,

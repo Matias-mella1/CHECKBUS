@@ -38,7 +38,7 @@ const emit = defineEmits<{
   (e:'validationError', message: string): void
 }>()
 
-/* ===== Estado actual ===== */
+
 const estadoNombreActual = computed(() => {
   if (!props.initial) return 'PENDIENTE'
   const estado = props.estados.find(
@@ -57,7 +57,7 @@ const canEditCostoObs = computed(
   () => estadoNombreActual.value !== 'ANULADO'
 )
 
-/* ===== Estado default para nuevas mantenciones ===== */
+
 function getDefaultEstadoId(estados: CatalogEstado[]): number | null {
   if (!estados || !estados.length) return null
   const byName = (name:string) =>
@@ -76,7 +76,7 @@ function getDefaultEstadoId(estados: CatalogEstado[]): number | null {
 }
 const defaultEstadoId = computed(() => getDefaultEstadoId(props.estados))
 
-/* ===== Form ===== */
+
 const form = reactive({
   id_mantenimiento: props.initial?.id_mantenimiento,
   id_bus: props.initial?.id_bus ?? ('' as any),
@@ -128,7 +128,6 @@ function onSubmit() {
 <template>
   <form @submit.prevent="onSubmit" class="grid gap-3">
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-      <!-- BUS -->
       <label class="field">
         <span>Bus *</span>
         <select v-model="form.id_bus" :disabled="!canEditBusYContexto">
@@ -143,7 +142,6 @@ function onSubmit() {
         </select>
       </label>
 
-      <!-- TALLER -->
       <label class="field">
         <span>Taller *</span>
         <select v-model="form.id_taller" :disabled="!canEditBusYContexto">
@@ -158,7 +156,6 @@ function onSubmit() {
         </select>
       </label>
 
-      <!-- TIPO -->
       <label class="field">
         <span>Tipo *</span>
         <select v-model="form.id_tipo_mantenimiento" :disabled="!canEditBusYContexto">
@@ -173,13 +170,11 @@ function onSubmit() {
         </select>
       </label>
 
-      <!-- FECHA -->
       <label class="field">
         <span>Fecha *</span>
         <input type="date" v-model="form.fecha" :disabled="!canEditFecha" />
       </label>
 
-      <!-- COSTO -->
       <label class="field">
         <span>Costo Mano de Obra</span>
         <input
@@ -192,7 +187,6 @@ function onSubmit() {
       </label>
     </div>
 
-    <!-- OBSERVACIONES -->
     <label class="field">
       <span>Observaciones</span>
       <input

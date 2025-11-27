@@ -22,7 +22,6 @@ export default defineEventHandler(async (event) => {
   })
   if (!usuario) throw createError({ statusCode: 404, message: 'Usuario no encontrado' })
 
-  // ❌ No activar si no tiene roles VIGENTES
   if (nuevoEstado === 'ACTIVO') {
     const tieneRolVigente = usuario.roles.some(
       (r) => (r.estado || '').toUpperCase() === 'VIGENTE'

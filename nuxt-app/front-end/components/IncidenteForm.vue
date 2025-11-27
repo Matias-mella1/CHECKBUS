@@ -2,9 +2,7 @@
 import { ref, reactive, watchEffect, onMounted, onBeforeUnmount } from 'vue'
 import { useToast } from 'vue-toastification'
 
-/* =========================
-   TOAST (solo texto)
-========================= */
+
 const toast = useToast()
 
 function showValidationToast(errors: string[]) {
@@ -21,9 +19,6 @@ function showValidationToast(errors: string[]) {
   })
 }
 
-/* =========================
-   Tipos y Props
-========================= */
 type BusOpt = { id:number; label:string }
 type CatOpt = { id:number; nombre:string }
 
@@ -34,7 +29,7 @@ type Initial = {
   urgencia?: string
   ubicacion?: string
   descripcion?: string
-  id_estado_incidente?: number | null // <-- YA NO SE USA
+  id_estado_incidente?: number | null 
   id_tipo_incidente?: number | null
   tipoNombreOId?: string | number
 }
@@ -42,7 +37,7 @@ type Initial = {
 const props = defineProps<{
   initial?: Initial
   buses: BusOpt[]
-  tipos: CatOpt[]   // <-- solo tipos, estados ya no van
+  tipos: CatOpt[]  
 }>()
 
 const emit = defineEmits<{
@@ -58,14 +53,10 @@ const emit = defineEmits<{
   (e:'cancel'): void
 }>()
 
-/* =========================
-   Urgencias
-========================= */
+
 const URGENCIAS = ['BAJA','MEDIA','ALTA','CRÍTICA'] as const
 
-/* =========================
-   Helpers
-========================= */
+
 function ymdOrEmpty(v?: string) {
   if (!v) {
     const d = new Date()
@@ -82,9 +73,7 @@ function findTipoIdByNameOrId(arr:CatOpt[], v?:string|number) {
   return arr.find(t => t.nombre.toUpperCase() === s)?.id ?? null
 }
 
-/* =========================
-   FORM
-========================= */
+
 const form = reactive({
   id: props.initial?.id ?? undefined,
   id_bus: (props.initial?.id_bus ?? '') as number | '',
@@ -99,9 +88,6 @@ watchEffect(() => {
   form.id = props.initial?.id ?? undefined
 })
 
-/* =========================
-   VALIDACIÓN (sin estado)
-========================= */
 function validate(): boolean {
   const errors: string[] = []
 
@@ -135,9 +121,7 @@ function onSave() {
   })
 }
 
-/* =========================
-   MAPA (Leaflet)
-========================= */
+
 const mapEl = ref(null)
 let L: any = null
 let map: any = null
@@ -276,7 +260,6 @@ onBeforeUnmount(() => { if (map) map.remove() })
           </select>
         </div>
 
-        <!-- Ubicación -->
         <div class="span-2">
           <label class="label">Ubicación</label>
 

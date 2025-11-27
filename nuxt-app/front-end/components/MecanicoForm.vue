@@ -22,12 +22,11 @@ const form = reactive({
 })
 const saving = ref(false)
 
-// ---- Toast de validación (SOLO TEXTO) ----
 function showValidationToast(errors: string[]) {
   const msg = [
     'Errores de Validación (Revisar campos):',
     ...errors.map(e => `- ${e}`),
-  ].join('\n')  // saltos de línea
+  ].join('\n')  
 
   toast.clear()
 

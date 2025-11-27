@@ -44,8 +44,6 @@ const form = reactive({
   ruta_origen: '',
   ruta_fin: '',
 })
-
-/** Helper: convertir fecha API → valor válido para <input type="datetime-local"> */
 function toInputDateTime(value: string | undefined | null): string {
   if (!value) return ''
   const d = new Date(value)
@@ -58,11 +56,9 @@ function toInputDateTime(value: string | undefined | null): string {
   const hh   = pad(d.getHours())
   const mi   = pad(d.getMinutes())
 
-  // formato requerido por datetime-local: YYYY-MM-DDTHH:MM
   return `${yyyy}-${mm}-${dd}T${hh}:${mi}`
 }
 
-/** Cargar initial en el form */
 watch(
   () => props.initial,
   (val) => {
@@ -90,7 +86,7 @@ watch(
   { immediate: true }
 )
 
-/** Modo de edición */
+//Modo de edición 
 const currentMode = computed<EditMode>(() => props.mode ?? 'FULL')
 
 // FULL → todo editable
@@ -103,7 +99,7 @@ const isDescOnly = computed(() => currentMode.value === 'DESC_ONLY')
 const disableStructure = computed(() => !canEditFull.value)   // usuario, bus, fechas
 const disableTitleAndRoutes = computed(() => isDescOnly.value)
 
-/** Enviar */
+// Enviar
 function onSubmit() {
   const errors: string[] = []
 

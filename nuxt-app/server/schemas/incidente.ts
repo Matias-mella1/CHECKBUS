@@ -1,21 +1,7 @@
 // utils/schemas/incidente.ts
-import {
-  object,
-  number,
-  string,
-  optional,
-  nullable,
-  pipe,
-  trim,
-  nonEmpty,
-  minValue,
-  maxLength,
-  regex,
-  union,
-  transform,
-} from 'valibot'
+import {object,number,string,optional,nullable,pipe,trim,nonEmpty,minValue,maxLength,regex,union,transform,} from 'valibot'
 
-/* -------- IDs básicos -------- */
+
 const IdBusSchema = pipe(
   number('El bus es obligatorio.'),
   minValue(1, 'El bus es inválido.')
@@ -31,13 +17,13 @@ const IdTipoSchema = pipe(
   minValue(1, 'El tipo de incidente es inválido.')
 )
 
-// 👇 NUEVO: schema para estado del incidente
+
 const IdEstadoIncidenteSchema = pipe(
   number('El estado del incidente es inválido.'),
   minValue(1, 'El estado del incidente es inválido.')
 )
 
-/* -------- Fecha -------- */
+
 const FechaSchema = pipe(
   string('La fecha es obligatoria.'),
   trim(),
@@ -45,7 +31,7 @@ const FechaSchema = pipe(
   regex(/^\d{4}-\d{2}-\d{2}$/, 'La fecha debe tener formato YYYY-MM-DD.')
 )
 
-/* -------- Textos -------- */
+
 const TextoCortoOpcional = optional(
   nullable(
     pipe(
@@ -89,7 +75,6 @@ const PageSizeSchema = optional(
   )
 )
 
-/* -------- DTO: Crear -------- */
 export const CrearIncidenteDto = object({
   id_bus: IdBusSchema,
   id_usuario: optional(IdUsuarioSchema),
@@ -101,11 +86,10 @@ export const CrearIncidenteDto = object({
 
   id_tipo_incidente: IdTipoSchema,
 
-  // opcional: si no lo mandas, la BD puede poner por defecto REPORTADO
   id_estado_incidente: optional(IdEstadoIncidenteSchema),
 })
 
-/* -------- DTO: Listar (query) -------- */
+
 export const ListaQueryDto = object({
   page: PageNumberSchema,
   pageSize: PageSizeSchema,
@@ -114,7 +98,7 @@ export const ListaQueryDto = object({
   id_usuario: optional(IdUsuarioSchema),
   id_tipo_incidente: optional(IdTipoSchema),
 
-  // 👇 también puedes filtrar por estado si lo usas en el GET
+
   id_estado_incidente: optional(IdEstadoIncidenteSchema),
 
   urgencia: optional(
@@ -140,7 +124,7 @@ export const ListaQueryDto = object({
   sortOrder: optional(pipe(string(), trim())),
 })
 
-/* -------- DTO: Actualizar -------- */
+
 export const ActualizarIncidenteDto = object({
   id_bus: optional(IdBusSchema),
   id_usuario: optional(IdUsuarioSchema),
@@ -151,7 +135,5 @@ export const ActualizarIncidenteDto = object({
   descripcion: DescripcionOpcional,
 
   id_tipo_incidente: optional(IdTipoSchema),
-
-  // 👈 LO QUE FALTABA: ahora Valibot acepta el campo que mandas desde el front
   id_estado_incidente: optional(IdEstadoIncidenteSchema),
 })

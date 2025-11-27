@@ -13,7 +13,6 @@ export default defineEventHandler(async (event) => {
 
   const rawBody = await readBody(event)
 
-  // ✅ Validación con Valibot (todo opcional pero con tipos correctos)
   const result = safeParse(TurnoUpdateSchema, rawBody)
   if (!result.success) {
     const mensajes = result.issues.map((i) => `- ${i.message}`).join(' | ')
@@ -54,7 +53,7 @@ export default defineEventHandler(async (event) => {
     id_estado_turno = est.id_estado_turno
   }
 
-  // 🔒 Conflicto BUS
+
   const busConflict = await prisma.turnoConductor.findFirst({
     where: {
       id_turno: { not: id },
@@ -78,7 +77,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  // 🔒 Conflicto CONDUCTOR
+
   const driverConflict = await prisma.turnoConductor.findFirst({
     where: {
       id_turno: { not: id },

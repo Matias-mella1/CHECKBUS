@@ -7,7 +7,7 @@ type EstadoOpt = { id: number; nombre: string; categoria?: string | null }
 type PickOpt = { id: number; label: string }
 
 type Initial = {
-  id_documento?: number          // 👈 ID para edición
+  id_documento?: number        
   nombre_archivo?: string
   id_tipo_documento?: number | null
   id_estado_documento?: number | null
@@ -40,7 +40,7 @@ const props = withDefaults(
 const emit = defineEmits<{
   (e: 'cancel'): void
   (e: 'save', payload: {
-    id_documento?: number        // 👈 lo mandamos al padre
+    id_documento?: number  
     file: File | null
     nombre_archivo: string
     id_tipo_documento: number
@@ -55,9 +55,7 @@ const emit = defineEmits<{
 
 const toast = useToast()
 
-/* -------------------------------------------
-   Estado del form
-------------------------------------------- */
+
 const form = reactive({
   id_documento: props.initial?.id_documento ?? undefined as number | undefined,
   file: null as File | null,
@@ -72,9 +70,7 @@ const form = reactive({
   error: '' as string,
 })
 
-/* -------------------------------------------
-   Categoría + tipos filtrados
-------------------------------------------- */
+
 const selectedCategoria = ref<string | ''>('')
 
 const categorias = computed(() => {
@@ -92,7 +88,7 @@ const tiposFiltrados = computed(() => {
   )
 })
 
-/* al montar, si viene un tipo inicial, ajustamos la categoría seleccionada */
+
 onMounted(() => {
   if (form.id_tipo_documento) {
     const t = props.tipos.find(tt => tt.id === Number(form.id_tipo_documento))
@@ -102,10 +98,7 @@ onMounted(() => {
   }
 })
 
-/* -------------------------------------------
-   ESTADOS ORDENADOS (sin "General")
-   Orden: VIGENTE, POR VENCER, VENCIDO, ANULADO
-------------------------------------------- */
+
 const estadosOrdenados = computed(() => {
   const prioridadNombres = ['VIGENTE', 'POR VENCER', 'VENCIDO', 'ANULADO']
   const norm = (s: string) => s.trim().toUpperCase()
@@ -130,8 +123,6 @@ const estadoVigenteId = computed<number | null>(() => {
   return est ? est.id : null
 })
 
-/* Si no hay fecha de caducidad y no se ha elegido estado,
-   por defecto queda en VIGENTE */
 watch(
   () => form.fecha_caducidad,
   (val) => {
@@ -141,9 +132,7 @@ watch(
   }
 )
 
-/* -------------------------------------------
-   Reglas según categoría del TIPO
-------------------------------------------- */
+
 const selectedTipo = computed(() =>
   (props.tipos ?? []).find(t => t.id === Number(form.id_tipo_documento))
 )
@@ -167,9 +156,7 @@ const requiereIncidente = computed(
   () => categoriaLower.value === 'incidente'
 )
 
-/* -------------------------------------------
-   File change
-------------------------------------------- */
+
 function onFileChange(e: Event) {
   const input = e.target as HTMLInputElement
   const f = input.files?.[0] ?? null
@@ -185,9 +172,6 @@ function onFileChange(e: Event) {
   }
 }
 
-/* -------------------------------------------
-   Incidentes (select, no input de ID)
-------------------------------------------- */
 const incidentes = ref<PickOpt[]>([])
 const incidentesLoading = ref(false)
 
@@ -208,7 +192,7 @@ async function loadIncidentes() {
       ),
     }))
   } catch {
-    // opcional: mostrar toast
+    
   } finally {
     incidentesLoading.value = false
   }
@@ -220,13 +204,11 @@ watch(requiereIncidente, async (on) => {
   }
 })
 
-/* -------------------------------------------
-   Validación + Toast
-------------------------------------------- */
+
 function buildErrors(): string[] {
   const errors: string[] = []
 
-  // En CREATE el archivo es obligatorio
+
   if (props.mode === 'create' && !form.file) {
     errors.push('Archivo: debes seleccionar un archivo.')
   }
@@ -276,9 +258,7 @@ function showValidationToast(errors: string[]) {
   })
 }
 
-/* -------------------------------------------
-   Guardar
-------------------------------------------- */
+
 function onSave() {
   const errors = buildErrors()
   if (errors.length) {
@@ -288,8 +268,8 @@ function onSave() {
   }
 
   emit('save', {
-    id_documento: form.id_documento,  // 👈 se envía al padre
-    file: form.file,                  // puede ir null en edición
+    id_documento: form.id_documento,  
+    file: form.file,                  
     nombre_archivo: form.nombre_archivo.trim(),
     id_tipo_documento: Number(form.id_tipo_documento),
     id_estado_documento: Number(form.id_estado_documento),
@@ -305,7 +285,7 @@ function onSave() {
 <template>
   <form @submit.prevent="onSave">
     <div class="grid" style="grid-template-columns:1fr 1fr; gap:1rem">
-      <!-- Archivo -->
+  
       <div class="span-2">
         <label class="label">
           Archivo
@@ -325,7 +305,7 @@ function onSave() {
         </p>
       </div>
 
-      <!-- Nombre -->
+
       <div class="span-2">
         <label class="label">Nombre *</label>
         <input
@@ -335,7 +315,7 @@ function onSave() {
         />
       </div>
 
-      <!-- Categoría -->
+
       <div>
         <label class="label">Categoría</label>
         <select class="input" v-model="selectedCategoria">
@@ -350,7 +330,7 @@ function onSave() {
         </select>
       </div>
 
-      <!-- Tipo (filtrado por categoría) -->
+
       <div>
         <label class="label">Tipo *</label>
         <select class="input" v-model.number="form.id_tipo_documento">
@@ -366,7 +346,7 @@ function onSave() {
         </select>
       </div>
 
-      <!-- Estado (ordenado) -->
+  
       <div>
         <label class="label">Estado *</label>
         <select class="input" v-model.number="form.id_estado_documento">
@@ -381,7 +361,7 @@ function onSave() {
         </select>
       </div>
 
-      <!-- Fecha de caducidad -->
+      
       <div>
         <label class="label">Fecha de caducidad</label>
         <input
@@ -391,7 +371,7 @@ function onSave() {
         />
       </div>
 
-      <!-- Bus -->
+ 
       <div v-if="requiereBus">
         <label class="label">Bus *</label>
         <select class="input" v-model.number="form.id_bus">
@@ -402,7 +382,7 @@ function onSave() {
         </select>
       </div>
 
-      <!-- Conductor (label = RUT) -->
+
       <div v-if="requiereUsuario">
         <label class="label">Conductor *</label>
         <select class="input" v-model.number="form.id_usuario">
@@ -413,7 +393,7 @@ function onSave() {
         </select>
       </div>
 
-      <!-- Mantenimiento -->
+
       <div v-if="requiereMantenimiento">
         <label class="label">ID Mantenimiento *</label>
         <input
@@ -425,7 +405,7 @@ function onSave() {
         />
       </div>
 
-      <!-- Incidente (select) -->
+    
       <div v-if="requiereIncidente">
         <label class="label">Incidente *</label>
         <select class="input" v-model.number="form.id_incidente">
@@ -442,10 +422,10 @@ function onSave() {
         </select>
       </div>
 
-      <!-- Error bajo el form -->
+
       <p v-if="form.error" class="error span-2">⚠️ {{ form.error }}</p>
 
-      <!-- Acciones -->
+
       <div class="actions span-2">
         <button
           type="button"

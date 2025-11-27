@@ -24,7 +24,6 @@ export default defineEventHandler(async (event) => {
 
   const usuarios = await prisma.usuario.findMany({
     where: {
-      // 👈 OJO: cambia "turnos" por el nombre real de la relación en tu schema
       turnos: {
         none: {
           hora_inicio: { lt: fin },

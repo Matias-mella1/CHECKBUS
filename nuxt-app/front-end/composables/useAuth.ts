@@ -1,7 +1,6 @@
 // composables/useAuth.ts
 import { navigateTo } from '#app'
 
-/** Lo que tu backend podría enviar */
 type ServerUser = {
   id_usuario?: number
   id?: number
@@ -11,9 +10,8 @@ type ServerUser = {
   username?: string
 }
 
-/** Usuario normalizado para el front */
 export interface User {
-  id_usuario?: number   // 👈 ahora existe
+  id_usuario?: number   
   id?: number
   userId?: number
   nombre?: string
@@ -33,8 +31,6 @@ export function useAuth() {
         method: 'GET',
         credentials: 'include',
       })
-
-      // 🔄 Normalizamos para garantizar id_usuario
       const su = res.user || {}
       const normalized: User = {
         id_usuario: su.id_usuario ?? su.id ?? su.userId,

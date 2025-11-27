@@ -1,21 +1,6 @@
 // utils/schemas/repuesto.ts
-import {
-  object,
-  string,
-  optional,
-  number,
-  minLength,
-  maxLength,
-  trim,
-  pipe,
-  check,
-  union,
-  literal,
-} from 'valibot'
+import {object,string,optional,number,minLength,maxLength,trim,pipe,check,union,literal,} from 'valibot'
 
-/* -------------------------------------------------------------------------- */
-/*                                   CAMPOS                                   */
-/* -------------------------------------------------------------------------- */
 
 const NombreRepuesto = pipe(
   string('Nombre debe ser texto.'),
@@ -30,13 +15,11 @@ const DescripcionRepuesto = pipe(
   maxLength(500, 'Descripción: máx 500 caracteres.')
 )
 
-// Costo debe ser número >= 0
 const CostoRepuesto = pipe(
   number('Costo debe ser numérico.'),
   check((v) => v >= 0, 'Costo debe ser mayor o igual a 0.')
 )
 
-/** Helper: ID positivo obligatorio */
 function IdPositivo(label: string) {
   return pipe(
     number(`${label} debe ser numérico.`),
@@ -44,11 +27,6 @@ function IdPositivo(label: string) {
   )
 }
 
-/* -------------------------------------------------------------------------- */
-/*                              DTOs DE VALIDACIÓN                            */
-/* -------------------------------------------------------------------------- */
-
-// Crear repuesto
 export const CrearRepuestoDto = object({
   nombre: NombreRepuesto,
   descripcion: optional(DescripcionRepuesto),
@@ -58,7 +36,6 @@ export const CrearRepuestoDto = object({
   id_proveedor: IdPositivo('Proveedor'),
 })
 
-// Actualizar repuesto (todos opcionales)
 export const ActualizarRepuestoDto = object({
   nombre: optional(NombreRepuesto),
   descripcion: optional(DescripcionRepuesto),
@@ -68,7 +45,7 @@ export const ActualizarRepuestoDto = object({
   id_proveedor: optional(IdPositivo('Proveedor')),
 })
 
-// Query lista (todo string porque viene desde URL)
+
 export const RepuestoListaQueryDto = object({
   q: optional(string()),
   id_estado_repuesto: optional(string()),

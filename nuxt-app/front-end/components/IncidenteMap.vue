@@ -20,7 +20,7 @@ function detectLatLng(text?: string): { lat: number; lng: number } | null {
   const m = String(text).trim().match(/^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/)
   if (!m) return null
 
-  const [, latStr, lngStr] = m // <-- siempre strings si hubo match
+  const [, latStr, lngStr] = m
   const lat = parseFloat(m[1]!)
 const lng = parseFloat(m[2]!)
 

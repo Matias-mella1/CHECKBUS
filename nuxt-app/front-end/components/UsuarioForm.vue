@@ -37,7 +37,6 @@ const emit = defineEmits<{
 
 const isEditing = computed(() => !!props.initial?.id)
 
-// --------- Estado local ----------
 const id        = ref<number | undefined>(props.initial?.id)
 const rut       = ref<string>(props.initial?.rut ?? '')
 const nombre    = ref<string>(props.initial?.nombre ?? '')
@@ -48,7 +47,7 @@ const telefono  = ref<string>(props.initial?.telefono ?? '')
 const licencia  = ref<string>(props.initial?.licencia ?? '')
 const rolesSel  = ref<string[]>(props.initial?.roles ?? [])
 
-// Mostrar SIEMPRE los 4 roles base en UI
+// Mostrar SIEMPRE los 4 roles
 const baseRoles = ['ADMINISTRADOR', 'PROPIETARIO', 'CONDUCTOR', 'SUPERVISOR']
 const rolesUI = computed(() => {
   const set = new Set<string>([...baseRoles, ...(props.allRoles || [])])
@@ -67,7 +66,7 @@ watchEffect(() => {
   rolesSel.value = props.initial?.roles ?? []
 })
 
-/** 🔹 Valida RUT chileno en formato 12345678-9 (sin puntos, con guión) */
+// Valida RUT chileno en formato 12345678-9 (sin puntos, con guión) 
 function validarRutChilenoFront(raw: string): boolean {
   const value = raw.trim().toUpperCase()
   if (!/^\d{7,8}-[\dkK]$/.test(value)) return false
@@ -95,12 +94,12 @@ function validarRutChilenoFront(raw: string): boolean {
   return dv === dvCalc
 }
 
-/** 🔹 Normaliza el RUT (solo mayúsculas, sin espacios) */
+// Normaliza el RUT (solo mayúsculas, sin espacios) 
 function normalizarRut(raw: string): string {
   return raw.trim().toUpperCase()
 }
 
-/** 🔹 Validación de teléfono chileno SIN +56 → 912345678 */
+// Validación de teléfono chileno SIN +56 → 912345678 */
 function validarTelefono(raw: string): boolean {
   const clean = raw.replace(/\s+/g, '')
   if (!clean) return true // opcional
@@ -110,7 +109,7 @@ function normalizarTelefono(raw: string): string {
   return raw.replace(/\s+/g, '')
 }
 
-/** 🔹 Valida TODOS los campos y devuelve lista de errores */
+//Valida TODOS los campos y devuelve lista de errores 
 function validate(): string[] {
   const errors: string[] = []
 

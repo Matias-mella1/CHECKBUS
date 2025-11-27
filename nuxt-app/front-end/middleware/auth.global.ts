@@ -4,10 +4,10 @@ import { useAuth } from '../composables/useAuth'
 type CanonRole = 'ADMINISTRADOR' | 'PROPIETARIO' | 'SUPERVISOR' | 'CONDUCTOR'
 
 export default defineNuxtRouteMiddleware(async (to) => {
-  // 0️⃣ No interceptar API ni assets
+
   if (to.path.startsWith('/api') || to.path.startsWith('/_nuxt')) return
 
-  // 1️⃣ Rutas públicas
+  // Rutas públicas
   const publicRoutes = new Set<string>([
     '/',              // Login
     '/set-password',  // Definir contraseña
@@ -47,7 +47,7 @@ if (raw.some((r: string | string[]) => r.includes('COND')))   roles.push('CONDUC
     CONDUCTOR:     '/conductor/menu',
   }
 
-  // 5️⃣ Si entra a una pública ya logueado → envía a la home del primer rol por prioridad
+  //  Si entra a una pública ya logueado → envía a la home del primer rol por prioridad
   if (publicRoutes.has(to.path)) {
     const priority: CanonRole[] = ['ADMINISTRADOR', 'PROPIETARIO', 'SUPERVISOR', 'CONDUCTOR']
     const primary = priority.find(r => roles.includes(r))
@@ -56,7 +56,7 @@ if (raw.some((r: string | string[]) => r.includes('COND')))   roles.push('CONDUC
     return
   }
 
-  // 6️⃣ Autorización por rol (UNIÓN de rutas permitidas)
+  //  Autorización por rol (UNIÓN de rutas permitidas)
   const allowedByRole: Record<CanonRole, string[]> = {
 
 ADMINISTRADOR: [

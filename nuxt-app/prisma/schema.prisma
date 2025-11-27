@@ -7,7 +7,7 @@ datasource db {
   url      = env("CHECKBUS_DATABASE_URL")
 }
 
-model Rol {
+model Rol{
   id_rol      Int          @id @default(autoincrement())
   nombre_rol  String       @unique @db.VarChar(50)
   descripcion       String?   @db.VarChar(255)

@@ -1,11 +1,11 @@
 <template>
   <aside class="sidebar">
-    <!-- LOGO SOLO (SIN TEXTO) -->
+  
     <div class="logo-box">
       <img src="@/assets/fotos/logo.png" class="logo-img" alt="CheckBus Logo" />
     </div>
 
-    <!-- Menú -->
+
     <nav>
       <h3 class="menu-title">MENÚ</h3>
 
@@ -38,7 +38,7 @@ interface MenuItem { label: string; icon?: string; to?: string; section?: boolea
 
 const { user } = useAuth()
 
-// === Usuario ===
+// Usuario
 const userName = computed(() => user.value?.nombre || 'Usuario')
 const initials = computed(() => {
   const parts = (userName.value || 'U').trim().split(' ')
@@ -59,7 +59,7 @@ const roles = computed<Role[]>(() => {
 
 
 
-// === Menú por rol ===
+//  Menú por rol 
 const menuByRole: Record<Role, MenuItem[]> = {
   ADMINISTRADOR: [
     { label: 'Inicio', icon: '🏠', to: '/roles/administrador/menu' },
@@ -112,7 +112,7 @@ const menuByRole: Record<Role, MenuItem[]> = {
   ],
 }
 
-// === Combina menús de todos los roles ===
+//  Combina menús de todos los roles 
 const menuItems = computed<MenuItem[]>(() => {
   if (!user.value) return []
 
@@ -143,9 +143,7 @@ const menuItems = computed<MenuItem[]>(() => {
 </script>
 
 <style scoped>
-/* ============================================
-   SIDEBAR GENERAL
-============================================ */
+
 .sidebar {
   position: fixed;
   inset: 0 auto 0 0;
@@ -160,20 +158,14 @@ const menuItems = computed<MenuItem[]>(() => {
   overflow-y: auto;
 }
 
-/* ============================================
-   LOGO
-============================================ */
+
 .logo-box {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-
   padding: 1rem 0.8rem;
-
-  /* 🔼 Subimos el logo */
   margin: 0.4rem auto 1.2rem auto;
-
   width: 40%;
   background: rgba(255,255,255,0.06);
   border-radius: 16px;
@@ -182,8 +174,6 @@ const menuItems = computed<MenuItem[]>(() => {
   backdrop-filter: blur(6px);
 }
 
-
-/* 👉 Logo centrado y tamaño ideal */
 .logo-img {
   height: 50px;
   width: auto;
@@ -191,14 +181,10 @@ const menuItems = computed<MenuItem[]>(() => {
   filter: drop-shadow(0 3px 6px rgba(0,0,0,.45));
 }
 
-/* Sin texto */
 .logo-title {
   display: none;
 }
 
-/* ============================================
-   QUITAR PUNTOS DEL MENU
-============================================ */
 nav ul,
 nav li {
   list-style: none !important;
@@ -206,9 +192,6 @@ nav li {
   padding: 0;
 }
 
-/* ============================================
-   TÍTULO SECCIÓN
-============================================ */
 .menu-title {
   font-size: .78rem;
   color: #8fb2d6;
@@ -217,9 +200,6 @@ nav li {
   opacity: .9;
 }
 
-/* ============================================
-   SEPARADOR DE ROLES
-============================================ */
 .menu-section {
   padding: .6rem 1.5rem .3rem;
   font-size: .74rem;
@@ -229,9 +209,6 @@ nav li {
   opacity: .85;
 }
 
-/* ============================================
-   ITEMS DEL MENÚ
-============================================ */
 nav a {
   display: flex;
   align-items: center;
@@ -245,13 +222,11 @@ nav a {
   transition: background .25s, color .25s, transform .1s;
 }
 
-/* Hover sutil */
 nav a:hover {
   background: rgba(0, 200, 255, 0.16);
   color: #f8fbff;
 }
 
-/* Activo con efecto moderno */
 nav a.active {
   background: linear-gradient(92deg, #0ea5e9, #22c55e);
   color: #ffffff;
@@ -260,9 +235,6 @@ nav a.active {
   transform: translateY(-1px);
 }
 
-/* ============================================
-   TEXTO SI NO HAY ROL
-============================================ */
 .no-role {
   color: #94a3b8;
   text-align: center;

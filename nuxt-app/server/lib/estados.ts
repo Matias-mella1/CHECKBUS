@@ -1,13 +1,6 @@
 // server/lib/estados.ts
 import { prisma } from '../utils/prisma'
 
-/**
- * Devuelve (o crea si no existe) el id_estado_bus para el nombre dado.
- * Estados esperados en tu seed:
- *  - OPERATIVO
- *  - MANTENIMIENTO
- *  - FUERA DE SERVICIO
- */
 export async function getEstadoBusId(nombre: string): Promise<number> {
   const upper = nombre.toUpperCase().trim()
 

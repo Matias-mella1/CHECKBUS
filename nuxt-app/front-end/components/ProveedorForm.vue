@@ -38,7 +38,7 @@ const form = reactive<{
   email: props.initial?.email ?? '',
 })
 
-// ---- Toast de validación ----
+// Toast de validación 
 function showValidationToast(errors: string[]) {
   const msg = [
     'Errores de Validación (Revisar campos):',
@@ -64,7 +64,7 @@ function onSubmit() {
     errors.push('Nombre: máx 150 caracteres.')
   }
 
-  // =====  VALIDACIÓN TELÉFONO SOLO NÚMEROS  =====
+  //  VALIDACIÓN TELÉFONO SOLO NÚMEROS 
   if (form.telefono.trim()) {
 
     const tel = form.telefono.trim()
@@ -86,7 +86,7 @@ function onSubmit() {
     }
   }
 
-  // ===== VALIDACIÓN EMAIL =====
+  // VALIDACIÓN EMAIL 
   if (form.email.trim()) {
     const email = form.email.trim()
     if (email.length > 100) {
@@ -97,7 +97,7 @@ function onSubmit() {
     }
   }
 
-  // ===== VALIDACIÓN DIRECCIÓN =====
+  //  VALIDACIÓN DIRECCIÓN 
   if (form.direccion.trim() && form.direccion.length > 200) {
     errors.push('Dirección: máx 200 caracteres.')
   }

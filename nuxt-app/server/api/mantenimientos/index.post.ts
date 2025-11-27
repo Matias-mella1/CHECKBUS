@@ -55,11 +55,10 @@ export default defineEventHandler(async (event) => {
       fecha: toDateOrNull(data.fecha)!,
       observaciones: data.observaciones ?? null,
 
-      // campos de BD reales
       costo_mano_obra: montoManoObra,
       costo_repuestos: 0,
       costo_total: montoManoObra,
-      // 👆 ya NO enviamos "costo"
+
     }
 
     const creado = await prisma.mantenimiento.create({
@@ -105,7 +104,7 @@ export default defineEventHandler(async (event) => {
       },
     }
   } catch (err: any) {
-    console.error('❌ Error en POST /api/mantenimientos:', err)
+    console.error(' Error en POST /api/mantenimientos:', err)
     if (err?.statusCode) throw err
     throw createError({ statusCode: 500, message: `Error al crear mantenimiento: ${err?.message ?? 'Error desconocido'}` })
   }

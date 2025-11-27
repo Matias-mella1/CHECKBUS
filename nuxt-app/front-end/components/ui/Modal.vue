@@ -5,7 +5,6 @@
     @click="closeModal"
   >
     <div class="modal" @click.stop>
-      <!-- Pasamos la función close al slot -->
       <slot :close="closeModal"></slot>
     </div>
   </div>

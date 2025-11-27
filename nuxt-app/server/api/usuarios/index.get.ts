@@ -8,7 +8,6 @@ export default defineEventHandler(async (event) => {
   const q = getQuery(event) as any
   const where: any = {}
 
-  // 🔎 Búsqueda por texto
   if (q.q) {
     const text = String(q.q).trim()
     where.OR = [
@@ -19,12 +18,12 @@ export default defineEventHandler(async (event) => {
     ]
   }
 
-  // 🎨 Filtro por estado
+
   if (q.estado && ESTADOS_VALIDOS.includes(q.estado)) {
     where.estado_usuario = { nombre_estado: q.estado }
   }
 
-  // 🎭 Filtro por rol (solo roles vigentes/activos)
+
   if (q.rol) {
     where.roles = {
       some: {
@@ -34,7 +33,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // 📄 Paginación
+
   const page = q.page ? Math.max(1, Number(q.page)) : 1
   const pageSize = q.pageSize ? Math.max(1, Number(q.pageSize)) : 10
   const skip = (page - 1) * pageSize

@@ -46,7 +46,7 @@ export default defineEventHandler(async (event) => {
 
   const body = parsed.output
 
-  // id_usuario desde auth (o body como fallback)
+  // id_usuario desde auth 
   let idUsuario =
     Number((event as any).context?.auth?.user?.id_usuario) ||
     Number((event as any).context?.auth?.user?.id) ||
@@ -75,12 +75,11 @@ export default defineEventHandler(async (event) => {
     include: { bus: true, usuario: true, estado: true, tipo: true },
   })
 
-  // 🔔 ALERTA + CORREO (no esperamos)
   generarAlertaIncidenteInmediata(created.id_incidente).catch((err) =>
     console.error('[alertas] error alerta incidente inmediata', err),
   )
 
-  // 🚌 Actualizar estado de bus
+
   updateBusEstadoOnIncidente(created.id_incidente).catch((err) =>
     console.error('[bus] error updateBusEstadoOnIncidente', err),
   )

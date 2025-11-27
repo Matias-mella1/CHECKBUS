@@ -25,10 +25,10 @@ export default defineEventHandler(async () => {
     busesRevisionVencida,
     busesExtintorVencido,
   ] = await Promise.all([
-    // 1) Total de buses
+    //  Total de buses
     prisma.bus.count(),
 
-    // 2) Buses por estado
+    //  Buses por estado
     prisma.bus
       .groupBy({
         by: ['id_estado_bus'],
@@ -48,13 +48,13 @@ export default defineEventHandler(async () => {
         }))
       }),
 
-    // 3) Kilometraje promedio y máximo
+    // Kilometraje promedio y máximo
     prisma.bus.aggregate({
       _avg: { kilometraje: true },
       _max: { kilometraje: true },
     }),
 
-    // 4) Mantenciones por estado
+    // Mantenciones por estado
     prisma.mantenimiento
       .groupBy({
         by: ['id_estado_mantenimiento'],
@@ -80,7 +80,7 @@ export default defineEventHandler(async () => {
         }))
       }),
 
-    // 5) Incidentes últimos 30 días (detalle)
+    // Incidentes últimos 30 días 
     prisma.incidente.findMany({
       where: { fecha: { gte: hace30 } },
       orderBy: { fecha: 'desc' },
@@ -92,7 +92,7 @@ export default defineEventHandler(async () => {
       },
     }),
 
-    // 6) Alertas activas (no cerradas / resueltas / anuladas)
+    // Alertas activas (no cerradas / resueltas / anuladas)
     prisma.alerta.findMany({
       where: {
         estado: {
@@ -105,13 +105,13 @@ export default defineEventHandler(async () => {
       take: 10,
       include: {
         bus: true,
-        usuario: true, // <- para poder mostrar "Conductor ..."
+        usuario: true, 
         tipo: true,
         estado: true,
       },
     }),
 
-    // 7) Documentos que vencen en los próximos 30 días
+    // Documentos que vencen en los próximos 30 días
     prisma.documento.findMany({
       where: {
         fecha_caducidad: {
@@ -123,23 +123,23 @@ export default defineEventHandler(async () => {
       take: 10,
       include: {
         bus: true,
-        usuario: true, // docs de conductor
+        usuario: true, 
         tipo: true,
         estado: true,
       },
     }),
 
-    // 8) Mantenciones realizadas desde el inicio del mes
+    // Mantenciones realizadas desde el inicio del mes
     prisma.mantenimiento.count({
       where: { fecha: { gte: primerDiaMes } },
     }),
 
-    // 9) Incidentes últimos 30 días (solo conteo)
+    // Incidentes últimos 30 días 
     prisma.incidente.count({
       where: { fecha: { gte: hace30 } },
     }),
 
-    // 10) TOP buses con más incidentes en los últimos 30 días
+    // TOP buses con más incidentes en los últimos 30 días
     prisma.incidente
       .groupBy({
         by: ['id_bus'],
@@ -162,7 +162,7 @@ export default defineEventHandler(async () => {
         }))
       }),
 
-    // 11) Buses con revisión técnica vencida o sin fecha
+    // Buses con revisión técnica vencida o sin fecha
     prisma.bus.count({
       where: {
         OR: [
@@ -172,7 +172,7 @@ export default defineEventHandler(async () => {
       },
     }),
 
-    // 12) Buses con extintor vencido o sin fecha
+    //Buses con extintor vencido o sin fecha
     prisma.bus.count({
       where: {
         OR: [
@@ -223,7 +223,7 @@ export default defineEventHandler(async () => {
       descripcion: i.descripcion ?? '',
     })),
 
-    // IMPORTANTE: aquí "bus" ya puede ser bus o conductor (o ninguno)
+  
     alertasActivas: alertasActivasRaw.map((a) => {
       let sujeto = a.bus?.patente ?? ''
 
@@ -239,7 +239,7 @@ export default defineEventHandler(async () => {
       return {
         id: a.id_alerta,
         fecha: a.fecha_creacion,
-        bus: sujeto, // se usará en la columna "Asociado a"
+        bus: sujeto, 
         tipo: a.tipo?.nombre_tipo ?? '—',
         estado: a.estado?.nombre_estado ?? '—',
         prioridad: a.prioridad ?? '—',
@@ -248,7 +248,7 @@ export default defineEventHandler(async () => {
       }
     }),
 
-    // Documentos que vencen (bus o conductor)
+    // Documentos que vencen 
     docsPorVencer: docsPorVencerRaw.map((d) => {
       let sujeto = d.bus?.patente ?? ''
 
@@ -264,7 +264,7 @@ export default defineEventHandler(async () => {
       return {
         id: d.id_documento,
         vence: d.fecha_caducidad,
-        bus: sujeto, // se usará en la columna "Asociado a"
+        bus: sujeto, 
         tipo: d.tipo?.nombre_tipo ?? '—',
         estado: d.estado?.nombre_estado ?? '—',
         nombre_archivo: d.nombre_archivo,

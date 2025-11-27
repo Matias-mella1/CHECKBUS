@@ -7,7 +7,7 @@ import { join } from 'path'
 
 type TopIncidenteBus = { id_bus: number; patente: string; cantidad: number }
 
-// ================== Helpers de formato ==================
+
 const fmtDate = (v: Date | string | null) => {
   if (!v) return '—'
   const d = v instanceof Date ? v : new Date(v)
@@ -28,7 +28,7 @@ const fmtDateTimeNow = () => {
   return `${day}-${month}-${year} ${hours}:${minutes}`
 }
 
-// Paleta sencilla
+
 const colors = {
   primary: '#2563eb',
   primaryLight: '#e5edff',
@@ -39,16 +39,12 @@ const colors = {
   border: '#e5e7eb',
 }
 
-// ================== Helpers de dibujo ==================
 
-// Asegura que haya espacio suficiente en la página actual.
-// Si no, crea una nueva página.
-// Evita agregar página si recién estamos al inicio (para no crear páginas en blanco).
 function ensureSpace(doc: PDFKit.PDFDocument, extra: number = 60) {
   const bottom = doc.page.height - doc.page.margins.bottom
   const top = doc.page.margins.top
 
-  // si estamos casi arriba, no tiene sentido agregar otra página
+
   if (doc.y <= top + 5) return
 
   if (doc.y + extra > bottom) {
@@ -57,7 +53,7 @@ function ensureSpace(doc: PDFKit.PDFDocument, extra: number = 60) {
   }
 }
 
-// Título de sección con línea azul
+
 function addSectionTitle(doc: PDFKit.PDFDocument, title: string) {
   ensureSpace(doc, 40)
 
@@ -82,7 +78,7 @@ function addSectionTitle(doc: PDFKit.PDFDocument, title: string) {
   doc.fillColor(colors.dark)
 }
 
-// Panel de resumen (caja suave con borde)
+// Panel de resumen 
 function addSummaryPanel(
   doc: PDFKit.PDFDocument,
   rows: Array<{ label: string; value: string | number; highlight?: boolean }>,
@@ -121,7 +117,6 @@ function addSummaryPanel(
   doc.y = y + height + 10
 }
 
-// Bullet simple SIN caracteres raros
 function addBullet(doc: PDFKit.PDFDocument, text: string) {
   ensureSpace(doc, 20)
   doc
@@ -133,7 +128,6 @@ function addBullet(doc: PDFKit.PDFDocument, text: string) {
     })
 }
 
-// ================== Handler ==================
 export default defineEventHandler(async (event) => {
   try {
     const hoy = new Date()
@@ -158,10 +152,10 @@ export default defineEventHandler(async (event) => {
       busesRevisionVencida,
       busesExtintorVigente,
     ] = await Promise.all([
-      // 1) Total de buses
+      // Total de buses
       prisma.bus.count(),
 
-      // 2) Buses por estado
+      // Buses por estado
       prisma.bus
         .groupBy({
           by: ['id_estado_bus'],
@@ -179,13 +173,13 @@ export default defineEventHandler(async (event) => {
           }))
         }),
 
-      // 3) Kilometraje promedio y máximo
+      //  Kilometraje promedio y máximo
       prisma.bus.aggregate({
         _avg: { kilometraje: true },
         _max: { kilometraje: true },
       }),
 
-      // 4) Mantenciones por estado
+      // Mantenciones por estado
       prisma.mantenimiento
         .groupBy({
           by: ['id_estado_mantenimiento'],
@@ -209,7 +203,7 @@ export default defineEventHandler(async (event) => {
           }))
         }),
 
-      // 5) Incidentes últimos 30 días (detalle)
+      // Incidentes últimos 30 días (detalle)
       prisma.incidente.findMany({
         where: { fecha: { gte: hace30 } },
         orderBy: { fecha: 'desc' },
@@ -221,7 +215,7 @@ export default defineEventHandler(async (event) => {
         },
       }),
 
-      // 6) Alertas activas (no resueltas/anuladas)
+      // Alertas activas (no resueltas/anuladas)
       prisma.alerta.findMany({
         where: {
           estado: {
@@ -240,7 +234,7 @@ export default defineEventHandler(async (event) => {
         },
       }),
 
-      // 7) Documentos por vencer (bus o conductor)
+      // Documentos por vencer (bus o conductor)
       prisma.documento.findMany({
         where: {
           fecha_caducidad: {
@@ -258,17 +252,17 @@ export default defineEventHandler(async (event) => {
         },
       }),
 
-      // 8) Mantenciones desde inicio de mes
+      // Mantenciones desde inicio de mes
       prisma.mantenimiento.count({
         where: { fecha: { gte: primerDiaMes } },
       }),
 
-      // 9) Incidentes últimos 30 días (conteo)
+      // Incidentes últimos 30 días (conteo)
       prisma.incidente.count({
         where: { fecha: { gte: hace30 } },
       }),
 
-      // 10) Top buses con incidentes
+      // Top buses con incidentes
       prisma.incidente
         .groupBy({
           by: ['id_bus'],
@@ -291,7 +285,7 @@ export default defineEventHandler(async (event) => {
           }))
         }),
 
-      // 11) Buses con revisión técnica vencida o sin fecha
+      // Buses con revisión técnica vencida o sin fecha
       prisma.bus.count({
         where: {
           OR: [
@@ -301,7 +295,7 @@ export default defineEventHandler(async (event) => {
         },
       }),
 
-      // 12) Buses con extintor vencido o sin fecha
+      // Buses con extintor vencido o sin fecha
       prisma.bus.count({
         where: {
           OR: [
@@ -335,7 +329,7 @@ export default defineEventHandler(async (event) => {
       incidentesUltimos30,
     }
 
-    // ================== CREAR PDF ==================
+    // Crear PDF
     const doc = new PDFDocument({
       margin: 50,
       info: {
@@ -352,14 +346,14 @@ export default defineEventHandler(async (event) => {
       'attachment; filename="reporte-flota.pdf"',
     )
 
-    // ---------- HEADER ----------
+    
     const logoPath = join(process.cwd(), 'assets', 'fotos', 'logo.png')
     const headerY = doc.page.margins.top
 
     try {
       doc.image(logoPath, doc.page.margins.left, headerY - 5, { width: 60 })
     } catch {
-      // si no hay logo, no fallamos
+    
     }
 
     doc
@@ -389,7 +383,7 @@ export default defineEventHandler(async (event) => {
     doc.y = lineY + 15
     doc.fillColor(colors.dark)
 
-    // ---------- RESUMEN ----------
+    //Resumen
     addSectionTitle(doc, 'Resumen de la flota')
 
     const resumenRows = [
@@ -426,7 +420,7 @@ export default defineEventHandler(async (event) => {
 
     addSummaryPanel(doc, resumenRows)
 
-    // ---------- DISTRIBUCIÓN FLOTA ----------
+    
     addSectionTitle(doc, 'Distribución de flota por estado')
 
     if (!busesPorEstado.length) {
@@ -437,7 +431,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // ---------- ESTADO MANTENCIONES ----------
+
     addSectionTitle(doc, 'Estado de mantenciones')
 
     if (!mantPorEstado.length) {
@@ -448,7 +442,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // ---------- TOP INCIDENTES ----------
+
     addSectionTitle(doc, 'Buses con mas incidentes (ultimos 30 dias)')
 
     if (!topBuses.length) {
@@ -463,7 +457,6 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // ---------- INCIDENTES RECIENTES ----------
     addSectionTitle(doc, 'Incidentes recientes (ultimos 30 dias)')
 
     if (!incidentesRecientes.length) {
@@ -500,7 +493,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // ---------- ALERTAS ACTIVAS ----------
+
     addSectionTitle(doc, 'Alertas activas')
 
     if (!alertasActivas.length) {
@@ -554,7 +547,6 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // ---------- DOCUMENTOS POR VENCER ----------
     addSectionTitle(doc, 'Documentos por vencer (proximos 30 dias)')
 
     if (!docsPorVencer.length) {

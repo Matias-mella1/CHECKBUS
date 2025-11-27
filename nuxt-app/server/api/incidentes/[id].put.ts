@@ -56,7 +56,7 @@ export default defineEventHandler(async (event) => {
     data.fecha = new Date(`${b.fecha}T00:00:00`)
   }
 
-  // 👇 AHORA TS YA NO SE QUEJA, Y SE ACTUALIZA EN BD
+
   if (typeof b.id_estado_incidente === 'number') {
     data.id_estado_incidente = b.id_estado_incidente
   }
@@ -67,7 +67,6 @@ export default defineEventHandler(async (event) => {
     include: { bus: true, usuario: true, estado: true, tipo: true },
   })
 
-  // 🚌 Recalcular estado del bus
   updateBusEstadoOnIncidente(updated.id_incidente).catch((err) =>
     console.error('[bus] error updateBusEstadoOnIncidente', err),
   )

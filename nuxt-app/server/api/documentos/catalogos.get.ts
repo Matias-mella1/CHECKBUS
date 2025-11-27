@@ -4,51 +4,44 @@ import { prisma } from '../../utils/prisma'
 export default defineEventHandler(async () => {
   try {
     const [tipos, estados, buses, usuariosConductor] = await Promise.all([
-      // ==========================
-      // TIPOS DE DOCUMENTO
-      // ==========================
+
+      // Tipos de documentos
       prisma.tipoDocumento.findMany({
         orderBy: { nombre_tipo: 'asc' },
         select: { id_tipo_documento: true, nombre_tipo: true, categoria: true },
       }),
 
-      // ==========================
-      // ESTADOS
-      // ==========================
+     
+      // Estados documentos
+  
       prisma.estadoDocumento.findMany({
         orderBy: { nombre_estado: 'asc' },
         select: { id_estado_documento: true, nombre_estado: true },
       }),
 
-      // ==========================
-      // BUSES
-      // ==========================
+
+      // Buses
+    
       prisma.bus.findMany({
         orderBy: { id_bus: 'asc' },
         select: { id_bus: true, patente: true },
       }),
 
-      // ==========================
-      // USUARIOS CON ROL DE CONDUCTOR
-      // ==========================
+      //Usuarios conductor
+    
       prisma.usuario.findMany({
         where: {
           roles: {
             some: {
               rol: {
                 nombre_rol: {
-                  contains: 'Conductor',      // 👈 acepta "Conductor" o cualquier variante
-                  mode: 'insensitive',        // 👈 sin distinguir mayúsculas/minúsculas
+                  contains: 'Conductor',      
+                  mode: 'insensitive',        
                 },
               },
             },
           },
-          // OPCIONAL: si quieres mostrar solo conductores activos, descomenta:
-          /*
-          estado_usuario: {
-            nombre_estado: 'Activo',
-          },
-          */
+          
         },
         orderBy: { id_usuario: 'asc' },
         select: {
@@ -60,9 +53,6 @@ export default defineEventHandler(async () => {
       }),
     ])
 
-    // ==========================
-    // MAPEO PARA EL FRONTEND
-    // ==========================
 
     const busesOpt = buses.map(b => ({
       id: b.id_bus,
@@ -78,7 +68,7 @@ export default defineEventHandler(async () => {
       tipos,
       estados,
       buses: busesOpt,
-      usuarios: usuariosOpt, // 👈 SOLO conductores reales
+      usuarios: usuariosOpt, 
     }
   } catch (err: any) {
     console.error(err)

@@ -1,20 +1,5 @@
 // utils/schemas/taller.ts
-import {
-  object,
-  string,
-  number,
-  optional,
-  nullable,
-  pipe,
-  trim,
-  nonEmpty,
-  minLength,
-  maxLength,
-  minValue,
-  email as emailRule,
-  union,
-  transform,
-} from 'valibot'
+import {object, string,number,optional,nullable,pipe,trim,nonEmpty,minLength,maxLength,minValue,email as emailRule,union,transform,} from 'valibot'
 
 const NombreTallerSchema = pipe(
   string('El nombre es obligatorio.'),
@@ -65,16 +50,11 @@ export const TallerUpdateSchema = object({
   email: EmailOpcional,
 })
 
-/**
- * ⚠️ Aquí estaba el problema:
- * - Antes: number() → peta si llega "3" (string desde la query)
- * - Ahora: union([string(), number()]) + transform → lo convertimos a number o undefined
- */
 const IdTipoTallerQuerySchema = optional(
   pipe(
     union([string(), number()]),
     transform((v) => {
-      // sin filtro => no se usa en el WHERE
+
       if (v === '' || v == null) return undefined
 
       const n = Number(v)

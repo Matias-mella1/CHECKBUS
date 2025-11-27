@@ -1,18 +1,7 @@
 // utils/schemas/mecanico.ts
-import {
-  object,
-  string,
-  number,
-  optional,
-  pipe,
-  trim,
-  nonEmpty,
-  minLength,
-  maxLength,
-  minValue,
-} from 'valibot'
+import {object,string,number,optional,pipe,trim,nonEmpty,minLength,maxLength,minValue,} from 'valibot'
 
-/* ------------------ Campos básicos ------------------ */
+
 const NombreSchema = pipe(
   string('El nombre es obligatorio.'),
   trim(),
@@ -34,28 +23,20 @@ const IdTallerSchema = pipe(
   minValue(1, 'El taller es inválido.')
 )
 
-/* ------------------ CREATE ------------------ */
+
 export const MecanicoCreateSchema = object({
   id_taller: IdTallerSchema,
   nombre: NombreSchema,
   apellido: ApellidoSchema,
 })
 
-/* ------------------ UPDATE ------------------ */
+
 export const MecanicoUpdateSchema = object({
   id_taller: optional(IdTallerSchema),
   nombre: optional(NombreSchema),
   apellido: optional(ApellidoSchema),
 })
 
-/* ------------------ QUERY (BÚSQUEDA) ------------------ */
-/**
- * Aquí SOLO aceptamos:
- *  - undefined
- *  - number (>= 1)
- *
- * Nada de strings. La conversión '2' -> 2 la hacemos en el handler.
- */
 export const MecanicoQuerySchema = object({
   id_taller: optional(
     pipe(

@@ -1,21 +1,6 @@
 // utils/schemas/documento.ts
-import {
-  object,
-  string,
-  number,
-  optional,
-  minLength,
-  maxLength,
-  trim,
-  pipe,
-  union,
-  literal,
-  nullable,
-} from 'valibot'
+import {object,string,number,optional,minLength,maxLength,  trim,pipe,union,literal,nullable,} from 'valibot'
 
-// ------------------------
-// Campos base
-// ------------------------
 const NombreArchivo = pipe(
   string('Nombre debe ser texto.'),
   trim(),
@@ -30,12 +15,9 @@ const RutaArchivo = pipe(
   maxLength(255, 'La ruta no puede superar 255 caracteres.'),
 )
 
-// Permitir number o null
 const NullableNumber = nullable(number('Debe ser numérico.'))
 
-// ------------------------
-// DTO Crear
-// ------------------------
+
 export const CrearDocumentoDto = object({
   nombre_archivo:      NombreArchivo,
   ruta:                RutaArchivo,
@@ -51,9 +33,7 @@ export const CrearDocumentoDto = object({
   id_incidente:     optional(NullableNumber),
 })
 
-// ------------------------
-// DTO Actualizar
-// ------------------------
+
 export const ActualizarDocumentoDto = object({
   nombre_archivo:      optional(NombreArchivo),
   ruta:                optional(RutaArchivo),
@@ -69,9 +49,7 @@ export const ActualizarDocumentoDto = object({
   id_incidente:     optional(NullableNumber),
 })
 
-// ------------------------
-// DTO Lista
-// ------------------------
+
 export const ListaDocumentoQueryDto = object({
   q:                   optional(string()),
   id_tipo_documento:   optional(string()),

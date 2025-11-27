@@ -329,17 +329,17 @@ async function main() {
   if (!estadoActivo) throw new Error('Falta ACTIVO en EstadoUsuario')
   if (!rolAdmin) throw new Error('Falta ADMINISTRADOR en Rol')
 
-  const passwordHash = await bcrypt.hash('P455word2525', 10)
+  const passwordHash = await bcrypt.hash('Matiasmella2002*', 10)
 
   const admin = await prisma.usuario.upsert({
-    where: { email: 'admin@gmail.com' },
+    where: { email: 'mellamatias159@gmail.com' },
     update: {},
     create: {
-      rut: '12345678-9', 
-      nombre: 'usuario',
-      apellido: 'uno',
-      email: 'admin@gmail.com',
-      telefono: '924283690',
+      rut: '21160238-4', 
+      nombre: 'Matias',
+      apellido: 'Mella',
+      email: 'mellamatias159@gmail.com',
+      telefono: '963734690',
       username: 'admin1',
       password_hash: passwordHash,
       fecha_registro: new Date(),

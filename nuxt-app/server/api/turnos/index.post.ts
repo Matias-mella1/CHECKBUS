@@ -3,17 +3,15 @@ import { prisma } from '../../utils/prisma'
 import { defineEventHandler, readBody, createError } from 'h3'
 import { safeParse } from 'valibot'
 import { TurnoCreateSchema } from '../../schemas/turno'
-
-// 🔔 IMPORTA LAS ALERTAS DE TURNOS
 import { generarAlertaTurnoInmediata } from '../../lib/alertas'
 
-// Estados que se consideran “ocupando” recursos
+
 const ESTADOS_OCUPA = ['PROGRAMADO', 'EN CURSO', 'ACTIVO', 'PENDIENTE', 'ASIGNADO']
 
 export default defineEventHandler(async (event) => {
   const rawBody = await readBody(event)
 
-  // ✅ Validación con Valibot
+
   const result = safeParse(TurnoCreateSchema, rawBody)
 
   if (!result.success) {
@@ -33,7 +31,6 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, message: 'Inicio debe ser menor que fin.' })
   }
 
-  // 🔹 Estado por defecto = PROGRAMADO (si no viene uno explícito)
   let idEstadoTurno: number
   if (body.id_estado_turno) {
     const est = await prisma.estadoTurno.findUnique({
@@ -53,7 +50,7 @@ export default defineEventHandler(async (event) => {
     idEstadoTurno = est.id_estado_turno
   }
 
-  // 🔒 Conflicto BUS
+
   const busConflict = await prisma.turnoConductor.findFirst({
     where: {
       id_bus: body.id_bus,
@@ -76,7 +73,6 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  // 🔒 Conflicto CONDUCTOR
   const driverConflict = await prisma.turnoConductor.findFirst({
     where: {
       id_usuario: body.id_usuario,
@@ -115,7 +111,6 @@ export default defineEventHandler(async (event) => {
     include: { usuario: true, bus: true, estado: true },
   })
 
-  // 🔔 ALERTA
   try {
     await generarAlertaTurnoInmediata(created.id_turno)
   } catch (err) {

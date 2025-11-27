@@ -1,17 +1,5 @@
 // utils/schemas/alerta.ts
-import {
-  object,
-  string,
-  number,
-  optional,
-  boolean,
-  minLength,
-  maxLength,
-  trim,
-  pipe,
-  union,
-  literal,
-} from 'valibot'
+import {object,string,number,optional,boolean,minLength,maxLength,trim,pipe,union,literal,} from 'valibot'
 
 
 const TextoCorto = pipe(

@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, watchEffect, onMounted, onBeforeUnmount } from 'vue'
 
-/* =========================
-   Tipos y Props/Emits
-========================= */
+
 type BusOpt = { id:number; label:string }
 type CatOpt = { id:number; nombre:string }
 
@@ -37,15 +35,11 @@ const emit = defineEmits<{
   (e:'cancel'): void
 }>()
 
-/* =========================
-   Urgencias (select)
-========================= */
+
 const URGENCIAS = ['BAJA','MEDIA','ALTA','CRÍTICA'] as const
 type Urgencia = typeof URGENCIAS[number]
 
-/* =========================
-   Helpers
-========================= */
+
 function ymdOrEmpty(v?: string) {
   if (!v) {
     const d = new Date()
@@ -67,9 +61,6 @@ function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
   ]) as Promise<T>
 }
 
-/* =========================
-   Form
-========================= */
 type FormState = {
   id?: number
   id_bus: number | ''
@@ -128,9 +119,7 @@ function onSave() {
   })
 }
 
-/* =========================
-   Leaflet + Nominatim + Overpass
-========================= */
+
 const mapEl = ref<HTMLDivElement|null>(null)
 let L: any = null
 let map: any = null
@@ -146,7 +135,6 @@ const defaultLat = -36.833195
 const defaultLng = -73.049469
 const zoom = 13
 
-// Helpers dirección
 type ShortAddr = { text: string; street?: string; house?: string; city?: string }
 function shortAddress(addr: any): ShortAddr {
   const street = addr?.road || addr?.residential || addr?.pedestrian || addr?.path || addr?.street || addr?.footway
@@ -199,7 +187,7 @@ async function geocodeAddress(q: string): Promise<{lat:number,lng:number} | null
   return null
 }
 
-// Overpass (número cercano)
+
 function haversine(a:{lat:number,lng:number}, b:{lat:number,lng:number}) {
   const R = 6371000
   const dLat = (b.lat - a.lat) * Math.PI/180
@@ -251,9 +239,6 @@ async function overpassNearestHouse(lat:number, lng:number): Promise<{house:stri
   return null
 }
 
-/* =========================
-   Marcador SIEMPRE visible con divIcon (emoji 📍)
-========================= */
 function createEmojiIcon() {
   return L.divIcon({
     className: 'emoji-pin',
@@ -264,7 +249,7 @@ function createEmojiIcon() {
   })
 }
 
-// Dirección a partir de lat/lng (con cache y anti-race)
+// Dirección a partir de lat/lng 
 async function setLocationFromLatLng(lat:number, lng:number) {
   const mySeq = ++geocodeSeq
 
@@ -281,7 +266,7 @@ async function setLocationFromLatLng(lat:number, lng:number) {
   const pRev  = reverseGeocode(lat, lng)
   const pOver = overpassNearestHouse(lat, lng)
 
-  // 1) Nominatim primero (rápido)
+
   pRev.then(rev => {
     if (mySeq !== geocodeSeq) return
     const { text, street, house, city }: ShortAddr =
@@ -292,7 +277,7 @@ async function setLocationFromLatLng(lat:number, lng:number) {
     if (mapReady && marker) marker.bindPopup(firstText).openPopup()
   }).catch(() => {})
 
-  // 2) Overpass para añadir número si existe
+
   const near = await pOver.catch(() => null)
   if (mySeq !== geocodeSeq) return
   if (near) {
@@ -311,9 +296,6 @@ async function setLocationFromLatLng(lat:number, lng:number) {
   }
 }
 
-/* =========================
-   Inicialización del mapa
-========================= */
 const addressInput = ref<HTMLInputElement|null>(null)
 
 async function ensureLeafletCss() {
@@ -341,10 +323,10 @@ async function initMap() {
   map = L.map(mapEl.value).setView([defaultLat, defaultLng], zoom)
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map)
 
-  // Marcador con emoji 📍
+
   marker = L.marker([defaultLat, defaultLng], { draggable: true, icon: createEmojiIcon() }).addTo(map)
 
-  // Arregla montajes en contenedor oculto
+
   setTimeout(() => map.invalidateSize(), 0)
 
   map.on('click', async (e: any) => {
@@ -358,15 +340,13 @@ async function initMap() {
 
   mapReady = true
 
-  // Invalida tamaño cuando cambia el diálogo (evita recortes)
+
   const sheet = document.querySelector('.dialog-sheet') as HTMLElement | null
   ro = new ResizeObserver(() => { if (map) map.invalidateSize() })
   if (sheet) ro.observe(sheet)
 }
 
-/* =========================
-   Acciones UI
-========================= */
+
 async function useMyLocation() {
   if (!navigator.geolocation) return alert('Geolocalización no soportada por el navegador.')
   navigator.geolocation.getCurrentPosition(async (pos) => {
@@ -401,7 +381,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <!-- Hoja/diálogo que respeta el topbar -->
+
   <div class="dialog-sheet">
     <form @submit.prevent="onSave">
       <div class="grid" style="grid-template-columns:1fr 1fr; gap:1rem">

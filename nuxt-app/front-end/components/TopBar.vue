@@ -122,7 +122,6 @@ function openChangePassword() {
   openPassword.value = true
 }
 
-/* ---------- Logout ---------- */
 async function handleLogout() {
   await logout()
   openMenu.value = false
@@ -146,7 +145,6 @@ async function handleLogout() {
   width: 100%;
 }
 
-/* Usuario */
 .user-info {
   display: flex;
   flex-direction: column;
@@ -162,7 +160,6 @@ async function handleLogout() {
   color: #9cc7ff;
 }
 
-/* Avatar */
 .avatar {
   width: 38px;
   height: 38px;
@@ -182,7 +179,7 @@ async function handleLogout() {
   filter: brightness(1.1);
 }
 
-/* Menú dropdown */
+
 .menu {
   position: absolute;
   right: 1.2rem;
@@ -210,7 +207,7 @@ async function handleLogout() {
   color: #9cb5c9;
 }
 
-/* Items */
+
 .menu-item {
   width: 100%;
   text-align: left;
@@ -234,7 +231,7 @@ async function handleLogout() {
   color: #ffdede;
 }
 
-/* Fade */
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.15s, transform 0.15s;

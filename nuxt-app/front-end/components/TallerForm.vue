@@ -37,7 +37,7 @@ const form = reactive({
   email: props.initial?.email ?? '',
 })
 
-/* ============== TOAST VALIDACIÓN ============== */
+// TOAST VALIDACIÓN
 function showValidationToast(errors: string[]) {
   const msg =
     'Errores de Validación:\n' +
@@ -50,7 +50,6 @@ function showValidationToast(errors: string[]) {
   })
 }
 
-/* ============== VALIDACIONES ============== */
 function onSubmit() {
   const errors: string[] = []
   const nombre = form.nombre.trim()

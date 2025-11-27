@@ -3,7 +3,7 @@ import { defineEventHandler, getQuery, createError, setHeader } from 'h3'
 import { prisma } from '../../utils/prisma'
 import { safeParse } from 'valibot'
 import { ListaDocumentoQueryDto } from '../../schemas/documento'
-import { estadoSegunFechaCaducidad } from '../../utils/DocumentoRuler'  // 👈 IMPORTAR
+import { estadoSegunFechaCaducidad } from '../../utils/DocumentoRuler'  
 
 export default defineEventHandler(async (event) => {
   setHeader(event, 'Cache-Control', 'no-store')
@@ -61,15 +61,13 @@ export default defineEventHandler(async (event) => {
     prisma.documento.count({ where }),
   ])
 
-  // 👇 AQUÍ aplicamos la lógica de VIGENTE / POR VENCER / VENCIDO
+  
   const items = rows.map((r) => {
     const estadoAuto = estadoSegunFechaCaducidad(r.fecha_caducidad)
 
     return {
       ...r,
-      // convertimos DECIMAL a number
       tamano: r.tamano == null ? null : Number(r.tamano),
-      // sobrescribimos solo el nombre del estado para el front
       estado: r.estado
         ? { ...r.estado, nombre_estado: estadoAuto }
         : { nombre_estado: estadoAuto },
