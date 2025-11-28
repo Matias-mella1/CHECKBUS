@@ -7,7 +7,7 @@ import { useAuth } from '~/composables/useAuth'
 definePageMeta({ layout: 'panel' })
 const toast = useToast()
 
-/* ========= Auth / Roles ========= */
+/*  Auth / Roles */
 const { user } = useAuth()
 
 const rolesUsuario = computed<string[]>(() => {
@@ -35,7 +35,7 @@ const canDelete = computed(() => isAdmin.value)                     // solo admi
 const canChangeStatus = computed(() => isAdmin.value || isPropietario.value)
 const canEditRelaciones = computed(() => isAdmin.value || isPropietario.value) // repuestos/mecánicos
 
-/* ========= Tipos ========= */
+/* Tipos  */
 type CatalogBus = { id_bus:number; patente:string }
 type CatalogTaller = { id_taller:number; nombre:string }
 type CatalogTipo = { id_tipo_mantenimiento:number; nombre_tipo:string }
@@ -87,7 +87,7 @@ type MecanicoMant = {
   }
 }
 
-/* ========= Filtros ========= */
+/*  Filtros  */
 const search = reactive({
   q: '',
   id_bus: '' as number | '',
@@ -106,12 +106,10 @@ const { buses, talleres, tipos, estados } = await $fetch<{
   estados: CatalogEstado[]
 }>('/api/mantenimientos/catalogos')
 
-/* ========= Datos ========= */
 const items = ref<Row[]>([])
 const loading = ref(false)
 const errorMsg = ref('')
 
-/* ========= Estado visual ========= */
 const estadoKey = (row: Row) =>
   (row.estado?.nombre_estado ?? '').toUpperCase()
 
@@ -137,7 +135,7 @@ function toDateOnly(value: string | Date): string {
     : d.toISOString().slice(0, 10)
 }
 
-/* ========= Carga lista principal ========= */
+/*  Carga lista principal */
 async function load () {
   loading.value = true
   errorMsg.value = ''
@@ -215,7 +213,7 @@ async function reloadEditingMant () {
   if (updated) editing.value = { ...editing.value, ...updated }
 }
 
-/* ========= ABM Mantención ========= */
+/* ABM Mantención */
 function openCreate () {
   if (!canCreate.value) return
   editing.value = null
@@ -320,7 +318,7 @@ async function save (payload: SavePayload) {
   }
 }
 
-/* ========= Cambiar estado ========= */
+/*  Cambiar estado */
 function findEstadoIdByNombre(nombre: string): number | null {
   const e = estados.find(e =>
     e.nombre_estado.toUpperCase() === nombre.toUpperCase()
@@ -365,7 +363,7 @@ async function cambiarEstado(
   }
 }
 
-/* ========= Repuestos ========= */
+/* Repuestos  */
 async function loadRepuestosMant (id_mantenimiento: number) {
   try {
     const res = await $fetch<{ items: RepuestoMant[] }>(
@@ -497,10 +495,6 @@ async function removeMecanicoFromMant (id_mecanico:number) {
   }
 }
 
-/**
- * Guarda TODOS los cambios de cantidades de repuestos y actividades
- * de mecánicos en una sola acción. (Solo admin / propietario)
- */
 async function saveRelaciones () {
   if (!canEditRelaciones.value) return
   if (!editing.value?.id_mantenimiento) return
@@ -554,7 +548,6 @@ async function saveRelaciones () {
   }
 }
 
-/* ========= Helpers visuales ========= */
 function fmtFecha (d: string | Date) {
   const date = typeof d === 'string' ? new Date(d) : d
   return isNaN(date.getTime()) ? '—' : date.toLocaleDateString()

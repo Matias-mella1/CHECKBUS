@@ -8,7 +8,6 @@ import { useAuth } from '~/composables/useAuth'
 definePageMeta({ layout: 'panel' })
 const toast = useToast()
 
-/* ===== Auth / Roles ===== */
 const { user } = useAuth()
 
 const rolesUsuario = computed<string[]>(() => {
@@ -22,7 +21,6 @@ const isAdmin = computed(() =>
   rolesUsuario.value.includes('Administrador')
 )
 
-/* ===== Tipos ===== */
 type DocRow = {
   id_documento: number
   nombre_archivo: string
@@ -53,7 +51,7 @@ type SimpleOpt = { id:number; label:string }
 
 type SavePayload = {
   id_documento?: number
-  file?: File | null   // 👈 OPCIONAL en edición
+  file?: File | null  
   nombre_archivo: string
   id_tipo_documento: number
   id_estado_documento: number
@@ -64,7 +62,6 @@ type SavePayload = {
   id_incidente?: number | null
 }
 
-/* ===== Estado global ===== */
 const items     = ref<DocRow[]>([])
 const loading   = ref(false)
 const errorMsg  = ref('')
@@ -81,7 +78,6 @@ const catalogos = reactive<{
   usuarios: [],
 })
 
-/* ===== Filtros + paginación ===== */
 const search          = ref('')
 const filterTipo      = ref<number | ''>('')       // id tipo
 const filterEstado    = ref<number | ''>('')       // id estado
@@ -113,7 +109,6 @@ const tiposFiltradosHeader = computed(() => {
   )
 })
 
-/* ===== Normalización ===== */
 function normalizeDoc(r: any): DocRow {
   return {
     id_documento: Number(r.id_documento),
@@ -148,7 +143,7 @@ function normalizeDoc(r: any): DocRow {
   }
 }
 
-/* ===== Catálogos ===== */
+  //catalogos
 async function loadCatalogos() {
   try {
     const res = await $fetch<any>('/api/documentos/catalogos', {
@@ -180,7 +175,6 @@ async function loadCatalogos() {
   }
 }
 
-/* ===== Listado ===== */
 async function load() {
   loading.value = true
   errorMsg.value = ''
@@ -231,7 +225,7 @@ watch(filterCategoria, () => {
   load()
 })
 
-/* ===== Paginación ===== */
+
 function prevPage() {
   if (page.value <= 1) return
   page.value--
@@ -243,7 +237,7 @@ function nextPage() {
   load()
 }
 
-/* ===== Ver documento ===== */
+//ver documento
 async function verDoc(key: string, inline = true) {
   try {
     const { url } = await $fetch<{ url: string }>('/api/documentos/doc-url', {
@@ -256,7 +250,7 @@ async function verDoc(key: string, inline = true) {
   }
 }
 
-/* ===== Upload S3 ===== */
+//cargar s3
 const saving   = ref(false)
 const progress = ref(0)
 
@@ -288,7 +282,6 @@ async function putWithProgress(url: string, f: File) {
   })
 }
 
-/* ===== Modal (crear / editar) ===== */
 const showForm = ref(false)
 const editing  = ref<DocRow | null>(null)
 
@@ -308,7 +301,6 @@ function closeForm() {
   editing.value = null
 }
 
-/* initial para DocumentoForm */
 function toFormInitial(d: DocRow | null) {
   if (!d) return undefined
   return {
@@ -326,13 +318,13 @@ function toFormInitial(d: DocRow | null) {
   }
 }
 
-/* Guardar (crear / editar) */
+// Guardar (crear / editar) 
 async function handleSave(payload: SavePayload) {
   try {
     saving.value = true
     progress.value = 0
 
-    // ===== MODO EDICIÓN =====
+    //  MODO EDICIÓN 
     if (payload.id_documento) {
       const current = items.value.find(
         d => d.id_documento === payload.id_documento
@@ -417,7 +409,6 @@ async function handleSave(payload: SavePayload) {
   }
 }
 
-/* ===== Helpers visuales ===== */
 function fmtFecha(v?: string | null) {
   if (!v) return '—'
   const d = new Date(v)
@@ -695,18 +686,13 @@ const badgeIcon = (d: DocRow) =>
 
 .pill{display:inline-flex;align-items:center;padding:.15rem .5rem;border-radius:999px;font-size:.7rem;font-weight:600;text-transform:uppercase;margin-top:.15rem;}
 .pill-blue{background:#e0f2fe;color:#0369a1;}
-
-/* Pager */
 .pager{display:flex;justify-content:center;gap:.75rem;margin-top:.75rem;font-size:.85rem}
 .pager-btn{padding:.25rem .65rem;border:1px solid #ccc;border-radius:999px;background:#f9fafb;cursor:pointer}
 .pager-btn:disabled{opacity:.5;cursor:default}
 .pager-info{color:#4b5563}
 
-/* Modal */
 .backdrop{position:fixed;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.4);z-index:50}
 .modal{width:min(720px,92vw);max-height:90vh;overflow:auto}
-
-/* barra de progreso upload */
 .upload-progress{margin-top:.75rem}
 .bar-outer{
   width:100%;
@@ -724,7 +710,6 @@ const badgeIcon = (d: DocRow) =>
 .hint{font-size:.8rem;color:#6b7280;margin-top:.25rem}
 .error{color:#dc2626;margin-top:.5rem}
 
-/* Responsive */
 @media (max-width:1024px){
   .doc-card-body{grid-template-columns:1fr;}
 }

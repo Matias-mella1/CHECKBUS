@@ -18,7 +18,7 @@ type IncidenteItem = {
 type AlertaItem = {
   id: number
   fecha: string
-  bus: string   // ahora es "Asociado a": bus / conductor / —
+  bus: string   
   tipo: string
   estado: string
   prioridad: string
@@ -28,7 +28,7 @@ type AlertaItem = {
 type DocItem = {
   id: number
   vence: string
-  bus: string   // también "Asociado a"
+  bus: string  
   tipo: string
   estado: string
   nombre_archivo: string
@@ -218,7 +218,7 @@ onMounted(loadResumen)
         <div v-else class="empty">No hay datos para mostrar.</div>
       </section>
 
-      <!-- =============== BUSES POR ESTADO =============== -->
+      <!-- BUSES POR ESTADO -->
       <section class="card">
         <h2>🚌 Buses por estado</h2>
         <table v-if="busesPorEstado.length" class="table">
@@ -238,7 +238,7 @@ onMounted(loadResumen)
         <div v-else class="empty">No hay buses registrados.</div>
       </section>
 
-      <!-- =============== MANTENCIONES POR ESTADO =============== -->
+      <!--  MANTENCIONES POR ESTADO -->
       <section class="card">
         <h2>🛠️ Mantenciones por estado</h2>
         <table v-if="mantPorEstado.length" class="table">
@@ -258,7 +258,7 @@ onMounted(loadResumen)
         <div v-else class="empty">No hay mantenciones registradas.</div>
       </section>
 
-      <!-- =============== TOP BUSES CON INCIDENTES =============== -->
+      <!--  TOP BUSES CON INCIDENTES  -->
       <section class="card">
         <h2>⚠️ Top buses con más incidentes (30 días)</h2>
         <table v-if="topBusesIncidentes.length" class="table">
@@ -280,7 +280,7 @@ onMounted(loadResumen)
         </div>
       </section>
 
-      <!-- =============== INCIDENTES RECIENTES =============== -->
+      <!--  INCIDENTES RECIENTES  -->
       <section class="card wide">
         <h2>🚨 Incidentes recientes (últimos 30 días)</h2>
         <table v-if="incidentesRecientes.length" class="table table--compact">
@@ -311,7 +311,7 @@ onMounted(loadResumen)
         </div>
       </section>
 
-      <!-- =============== ALERTAS ACTIVAS =============== -->
+      <!--  ALERTAS ACTIVAS  -->
       <section class="card wide">
         <h2>🔔 Alertas activas</h2>
         <table v-if="alertasActivas.length" class="table table--compact">
@@ -343,7 +343,7 @@ onMounted(loadResumen)
         <div v-else class="empty">No hay alertas activas.</div>
       </section>
 
-      <!-- =============== DOCUMENTOS POR VENCER =============== -->
+      <!--  DOCUMENTOS POR VENCER  -->
       <section class="card wide">
         <h2>📄 Documentos por vencer (próximos 30 días)</h2>
         <table v-if="docsPorVencer.length" class="table table--compact">
@@ -375,7 +375,6 @@ onMounted(loadResumen)
 </template>
 
 <style scoped>
-/* tu CSS original, sin cambios de estilo */
 .page {
   display: flex;
   flex-direction: column;
@@ -385,7 +384,7 @@ onMounted(loadResumen)
   min-height: 100vh;
 }
 
-/* HEADER */
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -417,7 +416,6 @@ onMounted(loadResumen)
   font-size: 0.9rem;
 }
 
-/* BOTÓN DESCARGA */
 .btn-download {
   background: #22c55e;
   color: #0f172a;
@@ -442,7 +440,6 @@ onMounted(loadResumen)
   font-size: 1.1rem;
 }
 
-/* ESTADOS DE CARGA / ERROR */
 .error {
   color: #b91c1c;
   background: #fee2e2;
@@ -473,14 +470,12 @@ onMounted(loadResumen)
   }
 }
 
-/* GRID GENERAL */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1rem;
 }
 
-/* CARDS */
 .card {
   background: #ffffff;
   border-radius: 14px;
@@ -606,7 +601,6 @@ onMounted(loadResumen)
   color: #374151;
 }
 
-/* BADGE PRIORIDAD */
 .badge {
   display: inline-flex;
   align-items: center;

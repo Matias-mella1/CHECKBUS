@@ -9,8 +9,6 @@ export default defineNuxtPlugin((nuxtApp) => {
     timeout: 3000,
     closeOnClick: true,
     pauseOnHover: true,
-
-    // 🔥 ESTO ES LO QUE PERMITE USAR HTML EN LOS TOASTS
     allowHtml: true
   }
 

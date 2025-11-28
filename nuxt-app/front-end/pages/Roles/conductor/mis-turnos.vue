@@ -330,7 +330,6 @@ onMounted(loadTurnos)
   gap:1rem;
 }
 
-/* Cards base */
 .card{
   background:#fff;
   border-radius:12px;
@@ -353,7 +352,6 @@ onMounted(loadTurnos)
   font-weight:600;
 }
 
-/* Filtros */
 .filters{
   display:grid;
   grid-template-columns:1.2fr 1fr 1fr 150px;
@@ -399,7 +397,6 @@ onMounted(loadTurnos)
   font-size:.78rem;
 }
 
-/* Botones */
 .btn{
   background:#2563eb;
   color:#fff;
@@ -489,7 +486,6 @@ onMounted(loadTurnos)
   color:#6b7280;
 }
 
-/* Body */
 .turn-body{
   margin-top:.9rem;
   background:#ffffffde;
@@ -551,7 +547,7 @@ onMounted(loadTurnos)
   outline:none;
 }
 
-/* Footer */
+
 .turn-footer{
   margin-top:.8rem;
   padding-top:.7rem;
@@ -581,7 +577,6 @@ onMounted(loadTurnos)
   gap:.5rem;
 }
 
-/* Badges estado */
 .badge{
   display:inline-flex;
   align-items:center;
@@ -597,7 +592,7 @@ onMounted(loadTurnos)
 .badge-green{background:#dcfce7;color:#166534}
 .badge-red{background:#fee2e2;color:#991b1b}
 
-/* Responsive */
+
 @media (max-width:900px){
   .filters{
     grid-template-columns:1fr 1fr;

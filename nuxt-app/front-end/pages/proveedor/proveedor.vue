@@ -20,7 +20,7 @@ type Paged<T> = {
   items: T[]
 }
 
-// 👉 cantidad de proveedores por página
+// paginacion
 const ROWS_PER_PAGE = 10
 
 const search = reactive({
@@ -81,10 +81,8 @@ async function load() {
 
 onMounted(load)
 
-// En este caso filtered = items
 const filtered = computed(() => items.value)
 
-// Búsqueda con debounce al escribir
 watch(
   () => search.q,
   () => {
@@ -336,7 +334,6 @@ async function removeOne() {
   padding:1rem;
 }
 
-/* Filtros / toolbar */
 .filters {
   display:grid;
   grid-template-columns:1fr auto;
@@ -380,7 +377,6 @@ async function removeOne() {
   margin-top:.75rem;
 }
 
-/* LISTA / TARJETAS */
 .list-empty {
   padding:2rem;
   text-align:center;
@@ -552,8 +548,6 @@ async function removeOne() {
 .modal {
   width:min(680px, 92vw);
 }
-
-/* Modal confirmación */
 .confirm-card {
   background:#ffffff;
   border-radius:12px;
@@ -595,7 +589,6 @@ async function removeOne() {
   color:#ffffff;
 }
 
-/* Código en confirm */
 .code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     "Courier New", monospace;

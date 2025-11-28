@@ -2,7 +2,6 @@
 import { ref } from 'vue'
 import { useState, useCookie, navigateTo } from 'nuxt/app'
 
-// === Tipos del login ===
 type LoginUser =
   | { id: number; nombre: string; rol: string }
   | { id: number; nombre: string; username?: string; roles: string[] }
@@ -156,9 +155,6 @@ async function onSubmit() {
 </template>
 
 <style scoped>
-/* ==============================
-   FONDO GLOBAL
-================================= */
 .bg {
   min-height: 100dvh;
   display: grid;
@@ -168,9 +164,6 @@ async function onSubmit() {
   padding: clamp(16px, 3vw, 48px);
 }
 
-/* ==============================
-   CARD GENERAL
-================================= */
 .card {
   width: 100%;
   max-width: 1100px;
@@ -188,14 +181,13 @@ async function onSubmit() {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* PANEL IZQUIERDO — FONDO NUEVO Y MÁS PROFESIONAL */
 .left {
   background: linear-gradient(
     180deg,
-    #0a4a78 0%,      /* azul profundo elegante */
-    #0f6e9f 45%,      /* azul intermedio */
-    #139ac7 80%,      /* azul claro del logo */
-    rgba(120, 200, 120, 0.15) 100% /* toque verde MUY suave */
+    #0a4a78 0%,      
+    #0f6e9f 45%,      
+    #139ac7 80%,      
+    rgba(120, 200, 120, 0.15) 100%
   );
   color: white;
   padding: clamp(24px, 4vw, 48px);
@@ -205,7 +197,7 @@ async function onSubmit() {
   position: relative;
 }
 
-/* brillo sutil */
+
 .left::after {
   content: "";
   position: absolute;
@@ -218,17 +210,12 @@ async function onSubmit() {
   pointer-events: none;
 }
 
-
-/* ==============================
-   LOGO DESTACADO
-================================= */
 .brand {
   display: flex;
   justify-content: center;
   margin-bottom: 1.8rem;
 }
 
-/* caja blanca para que el logo se vea SIEMPRE */
 .logo-wrapper {
   background: #ffffff;
   padding: 10px 18px;
@@ -243,10 +230,6 @@ async function onSubmit() {
   object-fit: contain;
   display: block;
 }
-
-/* ==============================
-   TEXTOS IZQUIERDOS
-================================= */
 .intro {
   text-align: center;
   margin-bottom: 1.4rem;
@@ -298,21 +281,13 @@ async function onSubmit() {
   border-radius: 50%;
 }
 
-/* ==============================
-   PANEL DERECHO
-================================= */
-/* PANEL DERECHO MEJORADO – MÁS CONTRASTE Y ELEGANCIA */
 .right {
   padding: clamp(24px, 4vw, 48px);
   display: flex;
   flex-direction: column;
   justify-content: center;
-
-  /* Nuevo color suave */
-  background: #e5ebe6; /* gris azulado suave */
+  background: #e5ebe6; 
   border-left: 1px solid #d6d9dd;
-
-  /* borde y profundidad */
   box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.05);
 }
 
@@ -373,7 +348,6 @@ async function onSubmit() {
   text-decoration: underline;
 }
 
-/* Botón */
 .btn {
   background: linear-gradient(180deg, var(--brand) 0%, var(--brand-hover) 100%);
   color: white;
@@ -408,9 +382,6 @@ async function onSubmit() {
   font-weight: 600;
 }
 
-/* ==============================
-   RESPONSIVE (CELULAR)
-================================= */
 @media (max-width: 768px) {
   .card {
     grid-template-columns: 1fr;

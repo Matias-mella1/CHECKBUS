@@ -34,10 +34,9 @@ async function onSubmit() {
 
   loading.value = true
   try {
-    // 👇 AHORA usamos la ruta /api/auth/password-tokens/[codigo].post.ts
     const res = await $fetch(`/api/auth/password-tokens/${token}`, {
       method: 'POST',
-      body: { password: password.value },  // lo que espera [codigo].post.ts
+      body: { password: password.value }, 
     })
 
     ok.value = (res as any).message || 'Contraseña actualizada y cuenta activada.'
@@ -130,7 +129,6 @@ function goLogin() {
 </template>
 
 <style scoped>
-/* Mismos estilos que ya tenías */
 .bg {
   min-height: 100dvh;
   display: grid;

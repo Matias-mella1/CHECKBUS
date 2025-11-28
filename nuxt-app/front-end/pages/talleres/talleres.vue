@@ -18,14 +18,9 @@ type Row = {
   _count?: { mecanicos:number; mantenimientos:number }
 }
 
-/**
- * 🔹 Importante:
- * - `id_tipo_taller` empieza en '' (string vacío) para que coincida con
- *   la opción "Todos los tipos" del select.
- */
 const filtros = reactive({
   q: '',
-  id_tipo_taller: '' as string, // ← arranca mostrando "Todos los tipos"
+  id_tipo_taller: '' as string, 
 })
 
 const tiposCat = (await $fetch<{tipos:{id_tipo_taller:number; nombre_tipo:string}[]}>(
@@ -36,7 +31,7 @@ const items = ref<Row[]>([])
 const loading = ref(false)
 const err = ref('')
 
-// --- paginación ---
+// paginación 
 const ROWS_PER_PAGE = 10
 const page = ref(1)
 const total = computed(() => items.value.length)
@@ -55,7 +50,7 @@ function goToPage(newPage:number) {
   page.value = newPage
 }
 
-// --- carga ---
+//  carga 
 async function load(){
   loading.value = true
   err.value = ''
@@ -73,7 +68,7 @@ async function load(){
     const res = await $fetch<{items:Row[]}>('/api/talleres', {
       query:{
         q: filtros.q || undefined,
-        id_tipo_taller: idTipoParam, // siempre number o undefined
+        id_tipo_taller: idTipoParam, 
       }
     })
     items.value = res.items
@@ -92,7 +87,7 @@ async function load(){
 // Se recarga al cambiar filtros
 watchEffect(load)
 
-// --- modal crear / editar ---
+//  modal crear / editar 
 const showForm = ref(false)
 const editing = ref<Row|null>(null)
 
@@ -106,7 +101,7 @@ function openEdit(r:Row){
   showForm.value = true
 }
 
-// --- modal de confirmación de borrado ---
+// modal de confirmación de eliminar
 const showDeleteConfirm = ref(false)
 const deleteTarget = ref<Row | null>(null)
 
@@ -134,7 +129,7 @@ async function confirmDelete() {
   }
 }
 
-// --- guardar ---
+// guardar 
 type SavePayload = {
   id_taller?: number
   nombre: string
@@ -411,7 +406,6 @@ async function save(data: SavePayload){
   color:#dc2626;
 }
 
-/* LISTA / TARJETAS */
 .list-empty {
   padding:2rem;
   text-align:center;
@@ -478,7 +472,6 @@ async function save(data: SavePayload){
   color:#4b5563;
 }
 
-/* Métricas */
 .taller-card-body {
   margin-top:1rem;
   display:grid;
@@ -503,7 +496,6 @@ async function save(data: SavePayload){
   font-weight:600;
 }
 
-/* Footer */
 .taller-card-footer {
   margin-top:1rem;
   padding-top:.75rem;
@@ -542,7 +534,6 @@ async function save(data: SavePayload){
   gap:.5rem;
 }
 
-/* Paginación */
 .pager {
   margin-top:.75rem;
   display:flex;
@@ -569,7 +560,6 @@ async function save(data: SavePayload){
   color:#4b5563;
 }
 
-/* Modales */
 .backdrop {
   position:fixed;
   inset:0;

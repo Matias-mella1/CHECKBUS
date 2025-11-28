@@ -13,11 +13,9 @@ type Row = {
   taller?: Taller | null
 }
 
-// --------- Config paginación ---------
 const ROWS_PER_PAGE = 10
 const page = ref(1)
 
-// --------- Filtros / datos ---------
 const filtros = reactive<{ q:string; id_taller:number|'' }>({ q:'', id_taller:'' })
 const talleres = ref<Taller[]>([])
 const items = ref<Row[]>([])
@@ -58,7 +56,6 @@ async function load() {
   }
 }
 
-// recarga con debounce simple al cambiar filtros
 let t: any
 watch(
   () => ({...filtros}),
@@ -75,7 +72,6 @@ onMounted(async () => {
   await load()
 })
 
-// --------- Orden + paginación en el FRONT ---------
 const orderedItems = computed(() =>
   [...items.value].sort((a, b) => a.id_mecanico - b.id_mecanico)
 )
@@ -95,14 +91,14 @@ function goToPage(newPage:number) {
   page.value = newPage
 }
 
-// --------- Form ---------
+// Form
 const showForm = ref(false)
 const editing = ref<Row|null>(null)
 
 function openCreate(){ editing.value = null; showForm.value = true }
 function openEdit(r:Row){ editing.value = { ...r }; showForm.value = true }
 
-// --------- Modal de confirmación (no local) ---------
+// Modal de confirmación 
 const showConfirm = ref(false)
 const confirmMessage = ref('')
 let confirmCallback: (() => Promise<void> | void) | null = null
@@ -129,7 +125,7 @@ function confirmCancel() {
   showConfirm.value = false
 }
 
-// eliminar usando modal bonito
+// eliminar con modal
 async function removeRow(id:number){
   openConfirm(
     `¿Eliminar mecánico #${id}? Esta acción es irreversible.`,
@@ -364,7 +360,6 @@ async function save(data:{ id_mecanico?:number; id_taller:number; nombre:string;
   color:#dc2626;
 }
 
-/* LISTA / TARJETAS */
 .list-empty {
   padding:2rem;
   text-align:center;
@@ -431,7 +426,6 @@ async function save(data:{ id_mecanico?:number; id_taller:number; nombre:string;
   color:#4b5563;
 }
 
-/* Footer */
 .mec-card-footer {
   margin-top:1rem;
   padding-top:.75rem;
@@ -470,7 +464,6 @@ async function save(data:{ id_mecanico?:number; id_taller:number; nombre:string;
   gap:.5rem;
 }
 
-/* Paginación */
 .pager {
   margin-top:.75rem;
   display:flex;
@@ -497,7 +490,7 @@ async function save(data:{ id_mecanico?:number; id_taller:number; nombre:string;
   color:#4b5563;
 }
 
-/* Modales */
+
 .backdrop {
   position:fixed;
   inset:0;
@@ -511,7 +504,6 @@ async function save(data:{ id_mecanico?:number; id_taller:number; nombre:string;
   width:min(520px,92vw);
 }
 
-/* Modal confirmación */
 .confirm-card {
   background:#ffffff;
   border-radius:12px;

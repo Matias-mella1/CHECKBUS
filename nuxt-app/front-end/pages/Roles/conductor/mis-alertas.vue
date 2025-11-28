@@ -8,17 +8,13 @@ definePageMeta({ layout: 'panel' })
 
 const toast = useToast()
 
-/* =========================
- *  Auth
- * ========================= */
+/*Auth*/
 const { user } = useAuth()
 const currentUserId = computed<number | null>(() =>
   (user.value?.id_usuario ?? user.value?.id ?? null) as number | null
 )
 
-/* =========================
- *  Tipos
- * ========================= */
+/* Tipos */
 type PickOpt = { id:number; nombre:string; categoria?:string | null }
 
 type AlertaRow = {
@@ -58,9 +54,7 @@ type AlertaRow = {
   } | null
 }
 
-/* =========================
- *  Estado principal
- * ========================= */
+/* Estado principal */
 const loading = ref(false)
 const errorMsg = ref('')
 
@@ -83,17 +77,13 @@ const search = reactive({
   id_tipo_alerta: '' as number | '',
 })
 
-/* =========================
- *  Paginación
- * ========================= */
+/* Paginación */
 const totalPages = computed(() =>
   Math.max(1, Math.ceil(total.value / pageSize.value))
 )
 const showPager = computed(() => total.value > pageSize.value)
 
-/* =========================
- *  Helpers visuales
- * ========================= */
+
 function estadoClass(nombre?: string | null) {
   const s = (nombre || '').toUpperCase()
   if (s === 'ACTIVA')   return 'badge badge-blue'
@@ -110,9 +100,7 @@ function prioridadClass(p?: string | null) {
   return 'badge badge-gray'
 }
 
-/* =========================
- *  Catálogos
- * ========================= */
+/*  Catálogos */
 async function loadCatalogos() {
   try {
     const res = await $fetch<{
@@ -138,9 +126,7 @@ async function loadCatalogos() {
   }
 }
 
-/* =========================
- *  Esperar auth lista
- * ========================= */
+/* Esperar auth lista */
 async function waitAuthReady(timeoutMs = 5000): Promise<void> {
   const start = Date.now()
   while (!currentUserId.value && Date.now() - start < timeoutMs) {
@@ -148,9 +134,7 @@ async function waitAuthReady(timeoutMs = 5000): Promise<void> {
   }
 }
 
-/* =========================
- *  Cargar lista (solo lectura)
- * ========================= */
+/* Cargar lista (solo lectura) */
 async function load() {
   if (!currentUserId.value) return
   loading.value = true
@@ -168,7 +152,7 @@ async function load() {
         id_tipo_alerta: search.id_tipo_alerta || undefined,
         page: page.value,
         pageSize: pageSize.value,
-        id_usuario: currentUserId.value || undefined, // 👈 clave para no ver el 401
+        id_usuario: currentUserId.value || undefined,
       },
       headers: { 'Cache-Control': 'no-store' },
     })
@@ -196,10 +180,7 @@ watch(
   },
   { deep: true }
 )
-
-/* =========================
- *  Paginación
- * ========================= */
+ 
 function prevPage() {
   if (page.value <= 1) return
   page.value--
@@ -211,16 +192,11 @@ function nextPage() {
   load()
 }
 
-/* =========================
- *  React a cambios de usuario
- * ========================= */
+
 watch(() => user.value?.id_usuario ?? user.value?.id, async () => {
   await load()
 })
 
-/* =========================
- *  Mounted
- * ========================= */
 onMounted(async () => {
   await waitAuthReady()
   await loadCatalogos()
@@ -383,7 +359,6 @@ onMounted(async () => {
   gap:1rem;
 }
 
-/* Card base */
 .card{
   background:#fff;
   border-radius:12px;
@@ -396,7 +371,7 @@ onMounted(async () => {
   margin-bottom:.75rem;
 }
 
-/* Filtros */
+
 .filters{
   display:grid;
   grid-template-columns:repeat(5,1fr);
@@ -442,7 +417,6 @@ onMounted(async () => {
   box-shadow:0 8px 20px rgba(0,0,0,.05);
 }
 
-/* Header */
 .alert-header{
   display:flex;
   justify-content:space-between;
@@ -484,7 +458,6 @@ onMounted(async () => {
   color:#4b5563;
 }
 
-/* Body */
 .alert-body{
   margin-top:1rem;
   background:#ffffffd9;
@@ -513,7 +486,7 @@ onMounted(async () => {
   margin-top:.15rem;
 }
 
-/* Footer */
+
 .alert-footer{
   margin-top:.9rem;
   padding-top:.75rem;
@@ -533,7 +506,6 @@ onMounted(async () => {
   color:#1e3a8a;
 }
 
-/* Badges estado / prioridad */
 .badge{
   display:inline-block;
   padding:.2rem .55rem;
@@ -551,7 +523,6 @@ onMounted(async () => {
   margin-top:.1rem;
 }
 
-/* Pager */
 .pager{
   margin-top:.75rem;
   display:flex;
@@ -573,7 +544,7 @@ onMounted(async () => {
 }
 .pager-info{color:#4b5563}
 
-/* Responsive */
+
 @media (max-width:900px){
   .filters{
     grid-template-columns:repeat(2,1fr);

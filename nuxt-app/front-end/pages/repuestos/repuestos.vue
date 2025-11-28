@@ -401,7 +401,7 @@ const fmtMoney = (n:number) =>
   box-shadow:0 1px 3px rgba(0,0,0,.08);
 }
 
-/* Filtros */
+
 .filters {
   display:grid;
   grid-template-columns:repeat(6,1fr);
@@ -447,7 +447,6 @@ const fmtMoney = (n:number) =>
   margin-top:.75rem;
 }
 
-/* LISTA / TARJETAS */
 .list-empty {
   padding:2rem;
   text-align:center;
@@ -503,7 +502,6 @@ const fmtMoney = (n:number) =>
   font-size:.9rem;
 }
 
-/* ID + estado en la derecha */
 .rep-header-right {
   display:flex;
   flex-direction:column;
@@ -529,7 +527,6 @@ const fmtMoney = (n:number) =>
   font-weight:600;
 }
 
-/* Cuerpo / métricas — MÁS ESPACIADO */
 .rep-card-body {
   margin-top:1.4rem;
   background:#ffffffa1;
@@ -538,14 +535,14 @@ const fmtMoney = (n:number) =>
 
   display:grid;
   grid-template-columns:repeat(2, minmax(0, 1fr));
-  column-gap:1.6rem;  /* antes 1.2rem */
-  row-gap:1.5rem;     /* antes ~0.8rem — ahora MUCHO más separado */
+  column-gap:1.6rem; 
+  row-gap:1.5rem;    
 }
 
 .rep-metric {
   background:#f9fafb;
   border-radius:12px;
-  padding:1rem; /* más aire interno */
+  padding:1rem; 
 }
 
 .rep-metric.full {
@@ -569,7 +566,7 @@ const fmtMoney = (n:number) =>
   text-overflow:ellipsis;
 }
 
-/* Footer */
+
 .rep-card-footer {
   margin-top:1rem;
   padding-top:.75rem;
@@ -609,7 +606,6 @@ const fmtMoney = (n:number) =>
   gap:.6rem;
 }
 
-/* Pagination */
 .pager {
   margin-top:.75rem;
   display:flex;
@@ -630,7 +626,6 @@ const fmtMoney = (n:number) =>
 }
 .pager-info { color:#4b5563; }
 
-/* Modales */
 .backdrop {
   position:fixed;
   inset:0;

@@ -4,14 +4,14 @@ import { useAuth } from '~/composables/useAuth'
 
 definePageMeta({ layout: 'panel' })
 
-// === Estado general ===
+//  Estado general 
 const loading = ref(true)
 const errorMsg = ref('')
 
-// === Auth ===
+//  Auth 
 const { user, refresh } = useAuth()
 
-// Roles del usuario (por si quieres validar)
+// Roles del usuario 
 const rolesUsuario = computed<string[]>(() => {
   const raw = (user.value as any)?.roles
   return Array.isArray(raw) ? raw : []
@@ -22,13 +22,13 @@ const isConductor = computed(() => rolesUsuario.value.includes('CONDUCTOR'))
 // ID usuario logueado
 const myUserId = computed(() => Number((user.value as any)?.id ?? 0))
 
-// === Datos ===
+//  Datos 
 const turnos = ref<any[]>([])
 
-// === Stats rápidas ===
+//  Stats rápidas 
 const totalTurnos = computed(() => turnos.value.length)
 
-// === Helpers ===
+//  Helpers 
 function fmtDate(v: string | Date | null | undefined) {
   if (!v) return '—'
   const d = new Date(v)
@@ -40,7 +40,7 @@ function fmtDate(v: string | Date | null | undefined) {
       })}`
 }
 
-// === Carga Turnos ===
+//  Carga Turnos 
 async function loadTurnos() {
   loading.value = true
   errorMsg.value = ''
@@ -71,7 +71,7 @@ async function loadTurnos() {
   }
 }
 
-// === Inicialización ===
+//  Inicialización 
 onMounted(async () => {
   await refresh(true)
   await loadTurnos()
@@ -298,7 +298,6 @@ onMounted(async () => {
   gap:.3rem;
 }
 
-/* Body turnos */
 .turn-body{
   margin-top:.9rem;
   background:#ffffffde;
@@ -331,8 +330,6 @@ onMounted(async () => {
   white-space:pre-wrap;
   word-break:break-word;
 }
-
-/* Badges de turnos */
 .badge{
   display:inline-flex;
   align-items:center;
@@ -354,7 +351,7 @@ onMounted(async () => {
   font-size:.9rem;
 }
 
-/* Responsive */
+
 @media (max-width:900px){
   .page{
     padding:.75rem;

@@ -9,7 +9,6 @@ definePageMeta({ layout: 'panel' })
 
 const toast = useToast()
 
-/* ---------------- Tipos ---------------- */
 type Incidente = {
   id: number
   id_usuario: number
@@ -28,13 +27,12 @@ type CatalogoBus = { id:number; label:string }
 type CatalogoOpt = { id:number; nombre:string }
 type SuggestedBus = { busId: number; busLabel: string } | null
 
-/* ---------------- Auth ---------------- */
+/*  Auth  */
 const { user } = useAuth()
 const currentUserId = computed<number | null>(() =>
   (user.value?.id_usuario ?? user.value?.id ?? null) as number | null
 )
 
-/* -------------- Estado UI -------------- */
 const search = reactive({
   q: '' as string,
   from: '' as string,
@@ -54,7 +52,7 @@ const mapAddress = ref('')
 let abortCtrl: AbortController | null = null
 let debounceId: number | null = null
 
-/* -------------- Catálogos -------------- */
+/*  Catálogos */
 const estadosCat = ref<CatalogoOpt[]>([])
 const tiposCat   = ref<CatalogoOpt[]>([])
 const busesConductor = ref<CatalogoBus[]>([])
@@ -94,7 +92,7 @@ async function loadBusesConductor() {
   }
 }
 
-/* ----------- Sugerencia de bus por fecha ----------- */
+/*  Sugerencia de bus por fecha  */
 const suggested = ref<SuggestedBus>(null)
 async function fetchSuggestedBusByFecha(fechaIso: string) {
   if (!currentUserId.value) { suggested.value = null; return }
@@ -126,7 +124,7 @@ const busesForForm = computed<CatalogoBus[]>(() => {
   return base
 })
 
-/* -------------- Utilidades -------------- */
+/*  Utilidades  */
 function ymdOr(raw: unknown): string {
   if (!raw) return ''
   const d = raw instanceof Date ? raw : new Date(String(raw))
@@ -189,7 +187,6 @@ function badgeClass(row: Incidente): string {
   return 'badge'
 }
 
-/* --------------- Carga API --------------- */
 async function load(): Promise<void> {
   if (!currentUserId.value) return
   if (abortCtrl) abortCtrl.abort()
@@ -224,7 +221,7 @@ async function load(): Promise<void> {
   }
 }
 
-/* ----------- Espera auth lista ----------- */
+/*  Espera auth lista  */
 async function waitAuthReady(timeoutMs = 5000): Promise<void> {
   const start = Date.now()
   while (!currentUserId.value && Date.now() - start < timeoutMs) {
@@ -232,7 +229,7 @@ async function waitAuthReady(timeoutMs = 5000): Promise<void> {
   }
 }
 
-/* --------------- Ciclo de vida --------------- */
+/*  Ciclo de vida  */
 onMounted(async () => {
   await waitAuthReady()
   await Promise.all([
@@ -252,7 +249,7 @@ watch(() => ({ ...search }), () => {
   debounceId = window.setTimeout(load, 300)
 }, { deep: true })
 
-/* ----------------- ABM ----------------- */
+
 function openCreate(): void {
   showForm.value = true
   editing.value = null
@@ -274,8 +271,6 @@ function openEdit(row: Incidente): void {
   if (row.fecha) fetchSuggestedBusByFecha(row.fecha)
 }
 
-/* --------- GUARDAR CON VALIDACIÓN DE URGENCIA --------- */
-/* --------- GUARDAR CON VALIDACIÓN DE CAMPOS OBLIGATORIOS --------- */
 async function handleSave(payload: {
   id?: number
   id_bus: number | null
@@ -293,7 +288,7 @@ async function handleSave(payload: {
       return
     }
 
-    // --- Validaciones de permisos cuando es edición ---
+    //  Validaciones de permisos cuando es edición
     if (payload.id) {
       const existing = items.value.find(i => i.id === payload.id)
       if (!existing) {
@@ -368,7 +363,7 @@ async function handleSave(payload: {
   }
 }
 
-/* --------------- Mapa --------------- */
+/*  Mapa  */
 function verMapa(row: Incidente): void {
   mapAddress.value = row.ubicacion || ''
   showMap.value = true
@@ -593,7 +588,6 @@ function verMapa(row: Incidente): void {
   border:1px solid #d1d5db;
 }
 
-/* Lista tarjetas */
 .list-empty {
   padding:2rem;
   text-align:center;
@@ -614,7 +608,6 @@ function verMapa(row: Incidente): void {
   box-shadow:0 8px 20px rgba(0,0,0,.05);
 }
 
-/* Header card */
 .inc-card-header {
   display:flex;
   justify-content:space-between;
@@ -648,7 +641,6 @@ function verMapa(row: Incidente): void {
   color:#4b5563;
 }
 
-/* Badges de estado */
 .badge{
   display:inline-flex;
   align-items:center;
@@ -665,7 +657,6 @@ function verMapa(row: Incidente): void {
 .badge-green{background:#dcfce7;color:#166534}
 .badge-red{background:#fee2e2;color:#991b1b}
 
-/* Body card */
 .inc-body {
   margin-top:1rem;
   background:#ffffffc9;
@@ -707,7 +698,6 @@ function verMapa(row: Incidente): void {
   text-overflow:ellipsis;
 }
 
-/* Footer card */
 .inc-card-footer {
   margin-top:1rem;
   padding-top:.8rem;

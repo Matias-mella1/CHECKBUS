@@ -8,7 +8,7 @@ const toast = useToast()
 
 definePageMeta({ layout: 'panel' })
 
-/* ================= ROLES ================= */
+//roles
 const { user } = useAuth()
 
 const rolesUsuario = computed<string[]>(() => {
@@ -52,7 +52,7 @@ interface Bus {
 
 type BusInput = Omit<Bus, 'id' | 'code' | 'extintorVigente'>
 
-/* ================= Filtros / datos ================= */
+
 const search = reactive({ q: '', estado: '' as '' | EstadoBus })
 const items = ref<Bus[]>([])
 const loading = ref(false)
@@ -61,7 +61,7 @@ const errorMsg = ref<string>('')
 let abortCtrl: AbortController | null = null
 let debounceId: number | null = null
 
-/* ================= Paginación ================= */
+//paginacion
 const ROWS_PER_PAGE = 10
 const page = ref(1)
 const totalPages = computed(() =>
@@ -74,7 +74,7 @@ const pagedItems = computed(() => {
   return items.value.slice(start, end)
 })
 
-/* ================= Normalización ================= */
+
 function normalizeFuel(v: any): Combustible {
   const s = String(v ?? '').toUpperCase()
   if (s === 'DIESEL') return 'DIESEL'
@@ -163,7 +163,6 @@ watch(
   { deep: false }
 )
 
-/* ================= Formulario ================= */
 const showForm = ref(false)
 const editing = ref<Bus | null>(null)
 const validationError = ref('')
@@ -233,8 +232,6 @@ async function openEdit(b: Bus) {
   validationError.value = ''
   showForm.value = true
 }
-
-/* ================= Validación ================= */
 function validate(): string[] {
   const errors: string[] = []
   const patenteRegex = /^([A-Z]{2}\d{4}|[A-Z]{4}\d{2}|[A-Z]{5}\d{1})$/i
@@ -275,7 +272,7 @@ function validate(): string[] {
   return errors
 }
 
-/* ================= Guardar ================= */
+//gurdar
 async function saveBus() {
   if (!canEdit.value) return   // solo admin / propietario
 
@@ -320,7 +317,7 @@ async function saveBus() {
   }
 }
 
-/* ================= Eliminar ================= */
+//eliminar
 const busToDelete = ref<Bus | null>(null)
 const showConfirmModal = ref(false)
 

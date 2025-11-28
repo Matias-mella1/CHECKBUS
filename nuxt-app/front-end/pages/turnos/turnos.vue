@@ -2,13 +2,13 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useToast } from 'vue-toastification'
 import TurnoForm from '~/components/TurnoForm.vue'
-import { useAuth } from '~/composables/useAuth' // 🔐 IMPORTANTE
+import { useAuth } from '~/composables/useAuth' 
 
 definePageMeta({ layout: 'panel' })
 
 const toast = useToast()
 
-/* ========= Tipos ========= */
+/*  Tipos  */
 type EstadoNombre = 'PROGRAMADO' | 'EN CURSO' | 'COMPLETADO' | 'CANCELADO'
 
 type Turno = {
@@ -31,7 +31,7 @@ type EstadoItem = { id:number; nombre:string }
 type Option     = { id:number; label:string }
 type EditMode   = 'FULL' | 'PARTIAL' | 'DESC_ONLY'
 
-/* ========= Auth / Roles ========= */
+/*Auth / Roles  */
 const { user } = useAuth()
 
 const rolesUsuario = computed<string[]>(() => {
@@ -48,19 +48,19 @@ const isAdmin = computed(() =>
 const isSupervisor = computed(() => rolesUsuario.value.includes('SUPERVISOR'))
 const isPropietario = computed(() => rolesUsuario.value.includes('PROPIETARIO'))
 
-// 👇 Permisos
+// Permisos
 const canAddTurno   = computed(() => isAdmin.value || isPropietario.value)
 const canEditTurno  = computed(() => isAdmin.value || isPropietario.value)
 const canCancelTurno = computed(() => isAdmin.value) // solo admin cancela
 const isReadOnly    = computed(() => !canAddTurno.value && !canEditTurno.value && !canCancelTurno.value)
 
-/* ========= Filtros ========= */
+/*  Filtros  */
 const qUsuario     = ref('')
 const from         = ref('')
 const to           = ref('')
 const estadoFilter = ref<'' | number>('')
 
-/* ========= Datos ========= */
+/* Datos  */
 const loading = ref(false)
 const items   = ref<Turno[]>([])
 
@@ -87,7 +87,6 @@ const formBuses = computed<Option[]>(() => {
   return base
 })
 
-/* ========= Helpers de estado ========= */
 function idByName(name: string): number | null {
   const s = name.toUpperCase()
   return estados.value.find(e => e.nombre.toUpperCase() === s)?.id ?? null
@@ -112,7 +111,7 @@ function estadoChipClass(label: string) {
   return 'estado-chip'
 }
 
-/* ========= Cargar catálogos ========= */
+/* Cargar catálogos */
 async function loadEstados() {
   try {
     const r = await $fetch<{items:EstadoItem[]}>('/api/turnos/estados')
@@ -157,7 +156,7 @@ async function loadBusesOperativos() {
   }
 }
 
-/* ========= Cargar turnos ========= */
+/* Cargar turnos */
 async function loadTurnos() {
   loading.value = true
   try {
@@ -212,7 +211,7 @@ async function loadTurnos() {
   }
 }
 
-/* ========= Agrupar por conductor ========= */
+/* Agrupar por conductor  */
 type GrupoTurnos = {
   usuarioId: number
   usuarioNombre: string
@@ -255,12 +254,12 @@ const grupos = computed<GrupoTurnos[]>(() => {
   return list
 })
 
-/* ========= Acordeón ========= */
+/* Turno se ve como  Acordeón  */
 const open = ref<Record<number, boolean>>({})
 function toggle(id:number){ open.value[id] = !open.value[id] }
 function isOpen(id:number){ return open.value[id] !== false }
 
-/* ========= Crear / Editar ========= */
+/* Crear / Editar  */
 const showAdd  = ref(false)
 const showEdit = ref(false)
 const savingAdd  = ref(false)
@@ -277,14 +276,14 @@ const editMode = computed<EditMode | undefined>(() => {
 })
 
 function openAddTurno() {
-  if (!canAddTurno.value) return  // 🔐 solo admin / propietario
+  if (!canAddTurno.value) return  //solo admin / propietario
   editing.value = null
   showAdd.value = true
   Promise.all([loadConductoresActivos(), loadBusesOperativos()]).catch(() => {})
 }
 
 function openEditTurno(t:Turno) {
-  if (!canEditTurno.value) return // 🔐 solo admin / propietario
+  if (!canEditTurno.value) return //solo admin / propietario
   editing.value = t
   showEdit.value = true
   Promise.all([loadConductoresActivos(), loadBusesOperativos()]).catch(() => {})
@@ -376,7 +375,7 @@ async function handleSaveEdit(payload: {
   }
 }
 
-/* ========= Cancelar ========= */
+/*  Cancelar turno  */
 async function cancelarTurno(t:Turno) {
   if (!canCancelTurno.value) { // 🔐 solo admin
     toast.error('No tienes permisos para cancelar turnos.')
@@ -407,15 +406,12 @@ async function cancelarTurno(t:Turno) {
   }
 }
 
-/* ========= Watch filtros ========= */
 watch(
   [from, to, estadoFilter],
   () => {
     loadTurnos()
   }
 )
-
-/* ========= Lifecycle ========= */
 onMounted(async () => {
   await loadEstados()
   await loadTurnos()
@@ -460,7 +456,7 @@ onMounted(async () => {
           </select>
         </div>
         <div class="filters-actions">
-          <!-- 👀 solo admin + propietario -->
+          <!--  solo admin + propietario -->
           <button
             v-if="canAddTurno"
             class="btn"
@@ -554,7 +550,7 @@ onMounted(async () => {
                 </section>
 
                 <footer class="turno-footer">
-                  <!-- 👀 acciones solo si NO es solo lectura -->
+                  <!--  acciones solo si NO es solo lectura -->
                   <div class="turno-actions" v-if="!isReadOnly">
                     <button
                       v-if="canEditTurno"
@@ -631,7 +627,7 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-/* añadí solo los chips de rol, lo demás igual que tu código */
+
 .grid {
   display: grid;
   gap: 1rem;
@@ -671,7 +667,6 @@ onMounted(async () => {
   color:#4b5563;
 }
 
-/* ... el resto de tus estilos igual ... */
 .filters {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr)) 160px;
@@ -718,7 +713,6 @@ onMounted(async () => {
   padding: 1rem 0;
 }
 
-/* ... resto igual que ya tienes (group-card, turno-card, backdrop, etc.) ... */
 .group-list {
   display: flex;
   flex-direction: column;

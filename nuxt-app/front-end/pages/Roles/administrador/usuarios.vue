@@ -50,7 +50,7 @@ const showForm = ref(false)
 const editing = ref<any | null>(null)
 const formServerError = ref('')
 
-// 🔔 Modal de confirmación propio (reemplaza confirm())
+//Modal de confirmación propio 
 const showConfirm = ref(false)
 const confirmMessage = ref('')
 let confirmCallback: (() => Promise<void> | void) | null = null
@@ -151,7 +151,7 @@ function handleCancel() {
   formServerError.value = ''
 }
 
-// -------------------- GUARDAR USUARIO (CON TOASTS) --------------------
+// GUARDAR USUARIO (CON TOASTS) 
 async function saveUser(payload: {
   rut: string
   nombre: string
@@ -192,7 +192,7 @@ async function saveUser(payload: {
   }
 }
 
-// -------------------- ELIMINAR USUARIO (CON TOASTS + MODAL) --------------------
+// ELIMINAR USUARIO (CON TOASTS + MODAL) 
 async function removeUser(id: number) {
   openConfirm(
     '⚠️ ¿Eliminar este usuario? Esta acción es irreversible.',
@@ -209,9 +209,7 @@ async function removeUser(id: number) {
   )
 }
 
-/**
- * Cambiar estado rápido usando el endpoint /api/usuarios/:id/estado (CON TOASTS + MODAL)
- */
+/** Cambiar estado rápido usando el endpoint /api/usuarios/:id/estado (CON TOASTS + MODAL)*/
 async function cambiarEstado(u: UsuarioRow, nuevoEstado: EstadoNombre) {
   const msgMap: Partial<Record<EstadoNombre, string>> = {
     INACTIVO: `¿Marcar al usuario "${u.nombre} ${u.apellido}" como INACTIVO?`,
@@ -248,7 +246,7 @@ async function goToPage(p: number) {
   await loadUsers()
 }
 
-// 🔐 reenviar correo de restablecimiento
+// reenviar correo de restablecimiento
 async function resetPassword(id: number) {
   if (!id) return
 
@@ -468,7 +466,7 @@ watch([q, estado, rol], () => {
   box-shadow: 0 2px 6px rgba(0,0,0,.08);
 }
 
-/* Filtros */
+
 .filters {
   display: grid;
   grid-template-columns: 1fr 150px 150px 150px;
@@ -507,14 +505,14 @@ watch([q, estado, rol], () => {
 
 .btn.primary { background: #16a34a; }
 
-/* Lista vacía */
+
 .empty {
   text-align: center;
   color: #6b7280;
   padding: 1rem 0;
 }
 
-/* Tarjetas */
+
 .user-list {
   display: flex;
   flex-direction: column;
@@ -522,12 +520,11 @@ watch([q, estado, rol], () => {
 }
 
 .user-card {
-  background:#d4e0f0;      /* azul clarito tipo buses */
+  background:#d4e0f0;      
   border-radius: 16px;
   padding: .8rem 1rem 1rem;
 }
 
-/* Cabecera */
 .user-header {
   display: flex;
   justify-content: space-between;
@@ -568,7 +565,6 @@ watch([q, estado, rol], () => {
   color: #6b7280;
 }
 
-/* Estado */
 .chip {
   padding: .25rem .6rem;
   border-radius: 999px;
@@ -581,7 +577,6 @@ watch([q, estado, rol], () => {
 .chip.yellow { background:#facc15; color:#1f2937; }
 .chip.gray   { background:#9ca3af; }
 
-/* Cuerpo */
 .user-body {
   margin-top: .8rem;
   display: grid;
@@ -624,7 +619,6 @@ watch([q, estado, rol], () => {
   color: #6b7280;
 }
 
-/* Footer */
 .user-footer {
   margin-top: .75rem;
   padding-top: .5rem;
@@ -666,7 +660,6 @@ watch([q, estado, rol], () => {
 .btn-outline:hover { background:#e5edff; }
 .btn-outline.danger { background:#fef2f2; border-color:#fecaca; color:#b91c1c; }
 
-/* Paginación */
 .pager {
   margin-top: .75rem;
   display: flex;
@@ -683,7 +676,7 @@ watch([q, estado, rol], () => {
 }
 .pager-btn:disabled { opacity:.5; }
 
-/* Modales */
+
 .modal {
   position: fixed;
   inset: 0;
@@ -706,7 +699,6 @@ watch([q, estado, rol], () => {
   gap: .5rem;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .filters {
     grid-template-columns: 1fr;

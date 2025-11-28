@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// 🔥 INCIDENTES – Admin / Propietario / Supervisor
 import { ref, reactive, watch, computed, onMounted } from 'vue'
 import { useToast } from 'vue-toastification'
 import { useAuth } from '~/composables/useAuth'
@@ -10,7 +9,6 @@ definePageMeta({ layout: 'panel' })
 
 const toast = useToast()
 
-/* ================= Tipos ================= */
 type Incidente = {
   id: number
   id_usuario: number
@@ -28,7 +26,7 @@ type Incidente = {
 type CatalogoBus = { id: number; label: string }
 type CatalogoOpt = { id: number; nombre: string }
 
-/* ================= Auth / Roles ================= */
+//Auth / Roles 
 const { user } = useAuth()
 
 const rolesUsuario = computed<string[]>(() => {
@@ -61,7 +59,7 @@ const currentUserId = computed<number | null>(() =>
   (user.value?.id_usuario ?? user.value?.id ?? null) as number | null
 )
 
-/* ================= Paginación + filtros ================= */
+// Paginación + filtros 
 const ROWS_PER_PAGE = 10
 const page = ref(1)
 
@@ -71,7 +69,6 @@ const search = reactive({
   id_tipo_incidente: '' as number | '',
 })
 
-/* ================= Estado UI ================= */
 const items = ref<Incidente[]>([])
 const loading = ref(false)
 const errorMsg = ref('')
@@ -88,7 +85,7 @@ const mapAddress = ref('')
 let abortCtrl: AbortController | null = null
 let debounceId: number | null = null
 
-/* ================= Catálogos ================= */
+/* Catálogos */
 const catalogo = ref<{
   buses: CatalogoBus[]
   tipos: CatalogoOpt[]
@@ -125,7 +122,7 @@ async function loadCatalogos() {
   }
 }
 
-/* ================= Utilidades / Normalize ================= */
+/*  Utilidades / Normalize */
 function ymdOr(raw: unknown): string {
   if (!raw) return ''
   const d = raw instanceof Date ? raw : new Date(String(raw))
@@ -224,7 +221,7 @@ function getEstadoIdByName(nombre: string): number | null {
   return found ? found.id : null
 }
 
-/* ================= Carga API ================= */
+/* Carga API  */
 async function load(): Promise<void> {
   if (abortCtrl) abortCtrl.abort()
   abortCtrl = new AbortController()
@@ -262,7 +259,7 @@ async function load(): Promise<void> {
   }
 }
 
-/* ================= Ciclo de vida ================= */
+/* Ciclo de vida*/
 onMounted(async () => {
   await loadCatalogos()
   await load()
@@ -288,7 +285,6 @@ const pagedItems = computed(() => {
   return items.value.slice(start, start + ROWS_PER_PAGE)
 })
 
-/* ================= ABM ================= */
 function openCreate(): void {
   if (!canCreate.value) return
   showForm.value = true
@@ -322,7 +318,7 @@ async function removeOne() {
   }
 }
 
-/* ========= Guardar (form) ========= */
+/* Guardar (form)*/
 async function handleSave(payload: {
   id?: number
   id_bus: number | null
@@ -403,7 +399,7 @@ async function handleSave(payload: {
   }
 }
 
-/* ========= Cambiar ESTADO desde botones ========= */
+/* Cambiar ESTADO desde botones */
 async function cambiarEstado(
   row: Incidente,
   nuevoEstado: 'REPORTADO' | 'EN REVISIÓN' | 'RESUELTO' | 'DESCARTADO',
@@ -449,7 +445,7 @@ async function cambiarEstado(
   }
 }
 
-/* ================= Mapa ================= */
+/*  Mapa */
 function verMapa(row: Incidente): void {
   mapAddress.value = row.ubicacion || ''
   showMap.value = true
@@ -837,7 +833,7 @@ function verMapa(row: Incidente): void {
 .badge-green{background:#dcfce7;color:#166534}
 .badge-red{background:#fee2e2;color:#991b1b}
 
-/* Body card */
+
 .inc-body {
   margin-top:1rem;
   background:#ffffffc9;
@@ -879,7 +875,6 @@ function verMapa(row: Incidente): void {
   text-overflow:ellipsis;
 }
 
-/* Footer card */
 .inc-card-footer {
   margin-top:1rem;
   padding-top:.8rem;
@@ -935,7 +930,7 @@ function verMapa(row: Incidente): void {
   background:#fecaca;
 }
 
-/* Modales */
+
 .backdrop {
   position:fixed;
   inset:0;
@@ -973,7 +968,6 @@ function verMapa(row: Incidente): void {
   margin-top:.5rem;
 }
 
-/* Paginador */
 .pager {
   margin-top:.75rem;
   display:flex;

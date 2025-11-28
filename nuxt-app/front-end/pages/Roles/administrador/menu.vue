@@ -5,9 +5,7 @@ definePageMeta({
   layout: 'panel',
 })
 
-/* ===============================
-   Tipos
-================================ */
+
 type Estado = 'OPERATIVO' | 'MANTENIMIENTO' | 'FUERA DE SERVICIO'
 
 interface BusRow {
@@ -29,19 +27,14 @@ interface UserRow {
   estado: 'ACTIVO' | 'INACTIVO'
 }
 
-/* ===============================
-   Estado
-================================ */
+
 const buses   = ref<BusRow[]>([])
 const users   = ref<UserRow[]>([])
-const alertas = ref<any[]>([])   // 👈 NUEVO: lista de alertas
+const alertas = ref<any[]>([])   
 
 const loading  = ref(false)
 const errorMsg = ref<string | null>(null)
 
-/* ===============================
-   Helpers
-================================ */
 function pickArray(payload: any): any[] {
   if (Array.isArray(payload)) return payload
   if (Array.isArray(payload?.items)) return payload.items
@@ -72,9 +65,7 @@ function estadoClass(s: Estado) {
   return s.toLowerCase().replace(/\s+/g, '-')
 }
 
-/* ===============================
-   Carga de datos
-================================ */
+/*  Carga de datos */
 let aborter: AbortController | null = null
 
 async function loadBuses() {
@@ -107,12 +98,10 @@ async function loadUsers() {
   }
 }
 
-// 👇 NUEVO: cargar alertas desde la API
 async function loadAlertas() {
   try {
     const res = await $fetch<any>('/api/alertas', {
-      // si tu API soporta filtros podrías hacer:
-      // query: { estado: 'ACTIVA' }
+     
     })
     alertas.value = pickArray(res)
   } catch (e: any) {
@@ -120,15 +109,12 @@ async function loadAlertas() {
   }
 }
 
-/* ===============================
-   Auto actualización
-================================ */
+/* Auto actualización */
 let timer: number | null = null
 onMounted(() => {
   loadBuses()
   loadUsers()
-  loadAlertas()              // 👈 también cargamos alertas al inicio
-  // refrescamos solo buses de forma periódica
+  loadAlertas()              
   timer = window.setInterval(loadBuses, 10000)
 })
 onUnmounted(() => {
@@ -136,14 +122,12 @@ onUnmounted(() => {
   if (aborter) aborter.abort()
 })
 
-/* ===============================
-   KPIs
-================================ */
+/*  KPIs */
 const kpiTotal = computed(() => buses.value.length)
 const kpiMant  = computed(() => buses.value.filter(r => r.status === 'MANTENIMIENTO').length)
 const kpiUsers = computed(() => users.value.length)
 
-// 🔴 AHORA: KPI de alertas ACTIVAS (estado ACTIVA)
+// KPI de alertas ACTIVAS (estado ACTIVA)
 const kpiAlert = computed(() =>
   alertas.value.filter(a => {
     const nombreEstado = String(
@@ -325,7 +309,6 @@ const kpiAlert = computed(() =>
   min-height: 100vh;
 }
 
-/* Header */
 .dashboard-header {
   background: #ffffff;
   border-radius: 16px;
@@ -346,7 +329,6 @@ const kpiAlert = computed(() =>
   font-size: 0.9rem;
 }
 
-/* ===== KPI Cards ===== */
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
@@ -405,7 +387,6 @@ const kpiAlert = computed(() =>
 .stat.mant  { background: linear-gradient(135deg, #f59e0b, #d97706); }
 .stat.alert { background: linear-gradient(135deg, #dc2626, #b91c1c); }
 
-/* ===== Cards de tablas ===== */
 .table-card {
   background: #ffffff;
   border-radius: 16px;
@@ -429,7 +410,6 @@ const kpiAlert = computed(() =>
   color: #6b7280;
 }
 
-/* ===== Tablas ===== */
 .table-wrapper {
   margin-top: 0.25rem;
   overflow-x: auto;
@@ -477,7 +457,6 @@ tbody tr:hover td {
   text-overflow: ellipsis;
 }
 
-/* ===== Estados / badges ===== */
 .badge {
   padding: 0.25rem 0.7rem;
   border-radius: 999px;
@@ -503,7 +482,6 @@ tbody tr:hover td {
   background: #6b7280;
 }
 
-/* ===== Mensajes vacíos ===== */
 .empty {
   display: flex;
   align-items: center;
@@ -519,15 +497,13 @@ tbody tr:hover td {
   opacity: 0.9;
 }
 
-/* ===== Errores ===== */
 .error {
   margin-top: 0.35rem;
   color: #dc2626;
   font-size: 0.9rem;
 }
 
-/* ===== Cargando ===== */
-.skeleton {
+.seleton {
   width: 100%;
   height: 30px;
   border-radius: 6px;
@@ -540,7 +516,6 @@ tbody tr:hover td {
   100% { background-position: -200% 0; }
 }
 
-/* ===== Responsive ===== */
 @media (max-width: 900px) {
   .dashboard {
     padding: 1rem;
